@@ -14,6 +14,10 @@
   max-width: 100%;
 }
 
+.nav-item-wrapper {
+  position: relative;
+}
+
 .nav-item {
   padding: 1rem 2rem;
   text-decoration: none;
@@ -22,6 +26,7 @@
   border-bottom: 3px solid transparent;
   transition: all 0.2s;
   white-space: nowrap;
+  display: block;
 }
 
 .nav-item:hover {
@@ -33,4 +38,36 @@
   color: #ff6600;
   border-bottom-color: #ff6600;
   background-color: #fff5f0;
+}
+
+.dokumente-dropdown {
+  position: fixed;
+  top: 126px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  background: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  display: flex;
+  gap: 0;
+  padding: 0 2rem;
+  justify-content: flex-start;
+}
+
+.dropdown-item {
+  display: block;
+  padding: 0.8rem 1.5rem;
+  text-decoration: none;
+  color: #333;
+  font-weight: 400;
+  transition: all 0.2s;
+  border-bottom: 3px solid transparent;
+  white-space: nowrap;
+}
+
+.dropdown-item:hover {
+  background-color: #fff5f0;
+  color: #ff6600;
+  border-bottom-color: #ff6600;
 }

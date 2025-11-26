@@ -1,0 +1,112 @@
+.dokumente-container {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.dokumente-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+}
+
+.dokumente-container h1 {
+  color: #333;
+  margin: 0 0 0.5rem 0;
+  font-size: 2rem;
+}
+
+.dokumente-subtitle {
+  color: #666;
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.add-document-btn {
+  background-color: #ff6600;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  white-space: nowrap;
+}
+
+.add-document-btn:hover {
+  background-color: #e55c00;
+}
+
+.documents-simple-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.document-simple-card {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  display: flex;
+  gap: 1rem;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.document-simple-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.document-simple-thumbnail {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.document-simple-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.document-simple-info h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  color: #333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.document-simple-category {
+  margin: 0 0 0.25rem 0;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.document-simple-date {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #999;
+}
+
+.no-documents {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #666;
+}
+
+.no-documents p {
+  font-size: 1.1rem;
+}

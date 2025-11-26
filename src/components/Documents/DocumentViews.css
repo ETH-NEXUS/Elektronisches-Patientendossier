@@ -1,0 +1,207 @@
+/* Listen-Ansicht */
+.document-list-view {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.document-list-item {
+  display: flex;
+  align-items: center;
+  padding: 1.5rem;
+  background: white;
+  border-bottom: 1px solid #e0e0e0;
+  transition: background-color 0.2s;
+  cursor: pointer;
+}
+
+.document-list-item:hover {
+  background-color: #f9f9f9;
+}
+
+.document-thumbnail {
+  width: 80px;
+  height: 60px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1.5rem;
+  flex-shrink: 0;
+}
+
+.document-thumbnail svg {
+  font-size: 2rem;
+  color: white;
+}
+
+.document-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.document-title {
+  margin: 0 0 0.3rem 0;
+  font-size: 1.05rem;
+  color: #333;
+  font-weight: 500;
+}
+
+.document-meta {
+  margin: 0 0 0.2rem 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.document-date {
+  margin: 0;
+  color: #999;
+  font-size: 0.85rem;
+}
+
+.document-menu-wrapper {
+  position: relative;
+}
+
+.document-menu-btn {
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.document-menu-btn:hover {
+  background-color: #e0e0e0;
+  color: #ff6600;
+}
+
+.document-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  min-width: 180px;
+  z-index: 100;
+  margin-top: 0.25rem;
+}
+
+.document-dropdown-menu button {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: #333;
+  transition: background-color 0.2s;
+}
+
+.document-dropdown-menu button:first-child {
+  border-radius: 6px 6px 0 0;
+}
+
+.document-dropdown-menu button:last-child {
+  border-radius: 0 0 6px 6px;
+}
+
+.document-dropdown-menu button:hover {
+  background-color: #f5f5f5;
+}
+
+.document-dropdown-menu button.delete-option {
+  color: #d32f2f;
+}
+
+.document-dropdown-menu button.delete-option:hover {
+  background-color: #ffebee;
+}
+
+.document-dropdown-menu button svg {
+  font-size: 1rem;
+}
+
+/* Kachel-Ansicht */
+.document-grid-view {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+.document-grid-item {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: box-shadow 0.2s, transform 0.2s;
+  cursor: pointer;
+}
+
+.document-grid-item:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.document-grid-thumbnail {
+  width: 100%;
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.document-grid-thumbnail svg {
+  font-size: 4rem;
+  color: white;
+}
+
+.document-grid-content {
+  padding: 1rem;
+}
+
+.document-grid-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.document-grid-title {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.05rem;
+  color: #333;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.document-grid-meta {
+  margin: 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .document-grid-view {
+    grid-template-columns: 1fr;
+  }
+
+  .document-thumbnail {
+    width: 60px;
+    height: 45px;
+    margin-right: 1rem;
+  }
+
+  .document-thumbnail svg {
+    font-size: 1.5rem;
+  }
+}

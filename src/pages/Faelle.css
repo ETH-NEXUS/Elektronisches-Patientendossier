@@ -1,0 +1,44 @@
+.faelle-container {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.faelle-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.faelle-header h1 {
+  color: #333;
+  font-size: 2rem;
+  margin: 0;
+}
+
+.add-fall-btn {
+  background-color: #ff6600;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.add-fall-btn:hover {
+  background-color: #e55c00;
+}
+
+.no-documents {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #666;
+}
+
+.no-documents p {
+  font-size: 1.1rem;
+}

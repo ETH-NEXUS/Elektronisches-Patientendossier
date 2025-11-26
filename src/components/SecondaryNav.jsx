@@ -1,7 +1,20 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
+import { useState } from 'react';
 import './SecondaryNav.css';
 
+const documentCategories = [
+  { label: 'Alle', path: '/dokumente' },
+  { label: 'Impfungen', path: '/dokumente?kategorie=impfungen' },
+  { label: 'Medikamente', path: '/dokumente?kategorie=medikamente' },
+  { label: 'Labor', path: '/dokumente?kategorie=labor' },
+  { label: 'Bildgebung', path: '/dokumente?kategorie=bildgebung' },
+  { label: 'Diagnosen', path: '/dokumente?kategorie=diagnosen' },
+  { label: 'Vorsorge', path: '/dokumente?kategorie=vorsorge' }
+];
+
 function SecondaryNav() {
+  const [showDokumenteDropdown, setShowDokumenteDropdown] = useState(false);
+
   return (
     <nav className="secondary-nav">
       <div className="secondary-nav-content">
@@ -17,12 +30,31 @@ function SecondaryNav() {
         >
           Fälle
         </NavLink>
-        <NavLink
-          to="/dokumente"
-          className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}
+        <div
+          className="nav-item-wrapper"
+          onMouseEnter={() => setShowDokumenteDropdown(true)}
+          onMouseLeave={() => setShowDokumenteDropdown(false)}
         >
-          Dokumente
-        </NavLink>
+          <NavLink
+            to="/dokumente"
+            className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}
+          >
+            Dokumente
+          </NavLink>
+          {showDokumenteDropdown && (
+            <div className="dokumente-dropdown">
+              {documentCategories.map((cat) => (
+                <NavLink
+                  key={cat.label}
+                  to={cat.path}
+                  className="dropdown-item"
+                >
+                  {cat.label}
+                </NavLink>
+              ))}
+            </div>
+          )}
+        </div>
         <NavLink
           to="/visualisierungen"
           className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}
