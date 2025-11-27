@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { UserProvider } from './context/UserContext';
 import Navbar from './components/Navbar';
 import SecondaryNav from './components/SecondaryNav';
 import Home from './pages/Home';
@@ -12,23 +13,25 @@ import './App.css';
 
 function App() {
   return (
-    <Router>
-      <div className="app">
-        <Navbar />
-        <SecondaryNav />
-        <main className="main-content">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/faelle" element={<Faelle />} />
-            <Route path="/dokumente" element={<Dokumente />} />
-            <Route path="/visualisierungen" element={<Visualisierungen />} />
-            <Route path="/freigaben" element={<Freigaben />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/einstellungen" element={<Einstellungen />} />
-          </Routes>
-        </main>
-      </div>
-    </Router>
+    <UserProvider>
+      <Router>
+        <div className="app">
+          <Navbar />
+          <SecondaryNav />
+          <main className="main-content">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/faelle" element={<Faelle />} />
+              <Route path="/dokumente" element={<Dokumente />} />
+              <Route path="/visualisierungen" element={<Visualisierungen />} />
+              <Route path="/freigaben" element={<Freigaben />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/einstellungen" element={<Einstellungen />} />
+            </Routes>
+          </main>
+        </div>
+      </Router>
+    </UserProvider>
   );
 }
 

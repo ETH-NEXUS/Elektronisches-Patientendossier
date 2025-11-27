@@ -1,0 +1,403 @@
+/* Einstellungen Page Styles */
+
+.settings-header {
+  margin-bottom: 2rem;
+}
+
+.settings-header h1 {
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+.settings-header p {
+  color: #7f8c8d;
+  font-size: 1.1rem;
+}
+
+/* Grid Layout */
+.settings-grid {
+  display: grid;
+  gap: 2rem;
+}
+
+/* Settings Section */
+.settings-section {
+  background-color: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.settings-section h2 {
+  color: #2c3e50;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.4rem;
+}
+
+.section-description {
+  color: #7f8c8d;
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+  margin-top: -0.5rem;
+}
+
+/* Setting Item */
+.setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.setting-item:last-child {
+  border-bottom: none;
+}
+
+.setting-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.setting-label strong {
+  color: #2c3e50;
+  font-size: 1rem;
+}
+
+.setting-description {
+  color: #95a5a6;
+  font-size: 0.85rem;
+}
+
+/* Font Size Options */
+.font-size-options {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.font-size-btn {
+  padding: 0.75rem 1.25rem;
+  background-color: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 600;
+  color: #5a6c7d;
+}
+
+.font-size-btn:hover {
+  border-color: #3498db;
+  background-color: #f8f9fa;
+}
+
+.font-size-btn.active {
+  background-color: #3498db;
+  color: white;
+  border-color: #3498db;
+}
+
+/* Select Dropdown */
+.setting-select {
+  padding: 0.6rem 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background-color: white;
+  cursor: pointer;
+  min-width: 200px;
+}
+
+.setting-select:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+/* Toggle Switch */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 54px;
+  height: 28px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #bdc3c7;
+  transition: 0.3s;
+  border-radius: 28px;
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.3s;
+  border-radius: 50%;
+}
+
+input:checked + .toggle-slider {
+  background-color: #27ae60;
+}
+
+input:checked + .toggle-slider:before {
+  transform: translateX(26px);
+}
+
+/* Export Buttons */
+.export-buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.export-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, #3498db 0%, #5dade2 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.export-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+}
+
+.export-icon {
+  font-size: 1.5rem;
+}
+
+/* Sessions List */
+.sessions-list {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.session-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+}
+
+.session-item.active-session {
+  background: linear-gradient(135deg, #e8f4f8 0%, #ffffff 100%);
+  border-color: #3498db;
+}
+
+.session-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.session-device {
+  font-weight: 700;
+  color: #2c3e50;
+  font-size: 1rem;
+}
+
+.session-details {
+  display: flex;
+  gap: 0.5rem;
+  color: #7f8c8d;
+  font-size: 0.85rem;
+}
+
+.session-badge {
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.session-badge.current {
+  background-color: #27ae60;
+  color: white;
+}
+
+.session-logout {
+  padding: 0.5rem 1rem;
+  background-color: white;
+  color: #e74c3c;
+  border: 2px solid #e74c3c;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.session-logout:hover {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.btn-logout-all {
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  background-color: white;
+  color: #e74c3c;
+  border: 2px solid #e74c3c;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-logout-all:hover {
+  background-color: #e74c3c;
+  color: white;
+}
+
+/* Danger Zone */
+.danger-zone {
+  border-color: #e74c3c;
+  background: linear-gradient(135deg, #fff5f5 0%, #ffffff 100%);
+}
+
+.danger-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid #fde8e8;
+}
+
+.danger-item:last-child {
+  border-bottom: none;
+}
+
+.danger-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.danger-label strong {
+  color: #2c3e50;
+  font-size: 1rem;
+}
+
+.btn-secondary {
+  padding: 0.6rem 1.2rem;
+  background-color: white;
+  color: #3498db;
+  border: 2px solid #3498db;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+  background-color: #3498db;
+  color: white;
+}
+
+.btn-warning {
+  padding: 0.6rem 1.2rem;
+  background-color: white;
+  color: #f39c12;
+  border: 2px solid #f39c12;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-warning:hover {
+  background-color: #f39c12;
+  color: white;
+}
+
+.btn-danger {
+  padding: 0.6rem 1.2rem;
+  background-color: white;
+  color: #e74c3c;
+  border: 2px solid #e74c3c;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-danger:hover {
+  background-color: #e74c3c;
+  color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .setting-item,
+  .danger-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .setting-select {
+    width: 100%;
+  }
+
+  .font-size-options {
+    width: 100%;
+  }
+
+  .font-size-btn {
+    flex: 1;
+    min-width: 100px;
+  }
+
+  .export-buttons {
+    grid-template-columns: 1fr;
+  }
+
+  .session-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .session-logout {
+    width: 100%;
+  }
+
+  .btn-secondary,
+  .btn-warning,
+  .btn-danger {
+    width: 100%;
+  }
+}

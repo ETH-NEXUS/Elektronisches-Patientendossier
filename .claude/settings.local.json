@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nVersion5 - Multi-User System & Responsive Navbar\n\nImplementiert Multi-User-Wechselsystem mit 4 Patientenprofilen:\n- Luca Frei (20 Jahre, sportlich)\n- Nina Baumann (30 Jahre, schwanger)\n- Markus Huber (50 Jahre, Geschäftsmann)\n- Elisa Meier (90 Jahre, mit chronischen Erkrankungen)\n\nFeatures:\n- UserContext für globale State-Verwaltung\n- Profil-Dropdown in Navbar mit User-Wechsel\n- Profile.jsx und Home.jsx nutzen currentUser aus Context\n- Navbar komplett responsive mit rem-Einheiten\n- Passt sich automatisch an Schriftgrößen-Einstellungen an\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git push)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
