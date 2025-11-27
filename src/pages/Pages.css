@@ -30,11 +30,11 @@
 }
 
 .info-card:hover {
-  box-shadow: 0 4px 8px rgba(255, 102, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(44, 62, 80, 0.08);
 }
 
 .info-card h2 {
-  color: #ff6600;
+  color: #2c3e50;
   margin-bottom: 1rem;
   font-size: 1.5rem;
 }
