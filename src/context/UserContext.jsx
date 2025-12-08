@@ -13,19 +13,30 @@ export const useUser = () => {
 
 export const UserProvider = ({ children }) => {
   const [currentUserId, setCurrentUserId] = useState('luca-frei');
+  const [users, setUsers] = useState(usersData);
 
-  const currentUser = usersData[currentUserId];
+  const currentUser = users[currentUserId];
 
   const switchUser = (userId) => {
     setCurrentUserId(userId);
   };
 
   const getAllUsers = () => {
-    return Object.values(usersData);
+    return Object.values(users);
+  };
+
+  const addDocument = (newDocument) => {
+    setUsers(prevUsers => ({
+      ...prevUsers,
+      [currentUserId]: {
+        ...prevUsers[currentUserId],
+        documents: [newDocument, ...prevUsers[currentUserId].documents]
+      }
+    }));
   };
 
   return (
-    <UserContext.Provider value={{ currentUser, switchUser, getAllUsers, currentUserId }}>
+    <UserContext.Provider value={{ currentUser, switchUser, getAllUsers, currentUserId, addDocument }}>
       {children}
     </UserContext.Provider>
   );
