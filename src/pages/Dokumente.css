@@ -56,11 +56,17 @@
   gap: 1rem;
   transition: all 0.2s;
   position: relative;
+  z-index: 1;
 }
 
 .document-simple-card:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transform: translateY(-2px);
+  z-index: 50;
+}
+
+.document-simple-card.menu-open {
+  z-index: 50;
 }
 
 .document-simple-thumbnail {

@@ -307,7 +307,7 @@ function Dokumente() {
       ) : (
         <div className="documents-simple-grid">
           {filteredDocuments.map(doc => (
-            <div key={doc.id} className="document-simple-card">
+            <div key={doc.id} className={`document-simple-card ${openMenuId === doc.id ? 'menu-open' : ''}`}>
               <div
                 className="document-simple-thumbnail"
                 style={{ backgroundColor: getThumbnailColor(doc.category) }}
