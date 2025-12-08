@@ -88,8 +88,8 @@ function Home() {
                 <BarChart
                   data={criticalValuesWarning.map(v => ({
                     name: v.name,
-                    wert: parseFloat(v.value),
-                    referenz: parseFloat(v.reference.match(/[\d.]+/)?.[0] || 0)
+                    wert: parseFloat(v.value.match(/-?[\d.]+/)?.[0] || 0),
+                    referenz: parseFloat(v.reference.match(/-?[\d.]+/)?.[0] || 0)
                   }))}
                   layout="vertical"
                   margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
