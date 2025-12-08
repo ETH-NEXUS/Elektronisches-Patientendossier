@@ -134,6 +134,10 @@
 }
 
 /* Widget Layouts */
+.critical-widget-priority {
+  grid-column: 1 / -1; /* Volle Breite */
+}
+
 .appointments-widget,
 .health-trend-widget {
   grid-column: span 2;

@@ -77,6 +77,41 @@ function Home() {
 
       {/* Dashboard Grid */}
       <div className="dashboard-grid">
+        {/* Kritische Werte Visualisierung - nur wenn kritische Werte vorhanden */}
+        {criticalValuesWarning.length > 0 && (
+          <div className="dashboard-widget critical-values-widget critical-widget-priority">
+            <div className="widget-header">
+              <h2>🚨 Kritische Werte - Handlungsbedarf</h2>
+            </div>
+            <div className="widget-content">
+              <ResponsiveContainer width="100%" height={criticalValuesWarning.length * 60 + 40}>
+                <BarChart
+                  data={criticalValuesWarning.map(v => ({
+                    name: v.name,
+                    wert: parseFloat(v.value),
+                    referenz: parseFloat(v.reference.match(/[\d.]+/)?.[0] || 0)
+                  }))}
+                  layout="vertical"
+                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+                  <XAxis type="number" />
+                  <YAxis dataKey="name" type="category" width={180} />
+                  <Tooltip
+                    contentStyle={{ backgroundColor: '#fff', border: '1px solid #ddd', borderRadius: '8px' }}
+                  />
+                  <Legend />
+                  <Bar dataKey="wert" fill="#f44336" name="Aktueller Wert" />
+                  <Bar dataKey="referenz" fill="#4CAF50" name="Zielwert" />
+                </BarChart>
+              </ResponsiveContainer>
+              <div className="critical-values-note">
+                <p><strong>Hinweis:</strong> Diese Werte liegen außerhalb des empfohlenen Bereichs. Bitte kontaktieren Sie Ihren Arzt.</p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Nächste Termine Widget */}
         <div className="dashboard-widget appointments-widget">
           <div className="widget-header">
@@ -151,41 +186,6 @@ function Home() {
             ))}
           </div>
         </div>
-
-        {/* Kritische Werte Visualisierung - nur wenn kritische Werte vorhanden */}
-        {criticalValuesWarning.length > 0 && (
-          <div className="dashboard-widget critical-values-widget">
-            <div className="widget-header">
-              <h2>🚨 Kritische Werte - Handlungsbedarf</h2>
-            </div>
-            <div className="widget-content">
-              <ResponsiveContainer width="100%" height={criticalValuesWarning.length * 60 + 40}>
-                <BarChart
-                  data={criticalValuesWarning.map(v => ({
-                    name: v.name,
-                    wert: parseFloat(v.value),
-                    referenz: parseFloat(v.reference.match(/[\d.]+/)?.[0] || 0)
-                  }))}
-                  layout="vertical"
-                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-                  <XAxis type="number" />
-                  <YAxis dataKey="name" type="category" width={180} />
-                  <Tooltip
-                    contentStyle={{ backgroundColor: '#fff', border: '1px solid #ddd', borderRadius: '8px' }}
-                  />
-                  <Legend />
-                  <Bar dataKey="wert" fill="#f44336" name="Aktueller Wert" />
-                  <Bar dataKey="referenz" fill="#4CAF50" name="Zielwert" />
-                </BarChart>
-              </ResponsiveContainer>
-              <div className="critical-values-note">
-                <p><strong>Hinweis:</strong> Diese Werte liegen außerhalb des empfohlenen Bereichs. Bitte kontaktieren Sie Ihren Arzt.</p>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* Medikation Widget */}
         {currentUser.currentMedications && currentUser.currentMedications.length > 0 && (
