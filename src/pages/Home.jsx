@@ -1,205 +1,281 @@
 import './Pages.css';
 import './Home.css';
 import { useUser } from '../context/UserContext';
+import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 function Home() {
   const { currentUser } = useUser();
 
+  // Mock-Daten für Gesundheitstrends (später aus echten Daten)
+  const healthTrendData = [
+    { date: '01.10', blutdruck: 115, puls: 68 },
+    { date: '08.10', blutdruck: 118, puls: 72 },
+    { date: '15.10', blutdruck: 116, puls: 70 },
+    { date: '22.10', blutdruck: 118, puls: 69 },
+    { date: '01.11', blutdruck: 117, puls: 71 },
+    { date: '20.11', blutdruck: 118, puls: 70 },
+  ];
+
+  // Dokumenten-Kategorien für Pie Chart
+  const documentStats = [
+    { name: 'Befunde', value: 12, color: '#4CAF50' },
+    { name: 'Bilder', value: 8, color: '#2196F3' },
+    { name: 'Berichte', value: 15, color: '#FF9800' },
+    { name: 'Rezepte', value: 5, color: '#9C27B0' },
+  ];
+
+  // Berechne nächsten Termin
+  const nextAppointment = currentUser.upcomingAppointments && currentUser.upcomingAppointments.length > 0
+    ? currentUser.upcomingAppointments[0]
+    : null;
+
+  // Alerts berechnen
+  const alerts = [];
+  if (nextAppointment) {
+    alerts.push({ type: 'appointment', message: `Termin heute: ${nextAppointment.type} um ${nextAppointment.time}`, icon: '📅' });
+  }
+
+  // Kritische Werte identifizieren
+  const criticalValuesWarning = currentUser.criticalValues.filter(v => v.status === 'warning' || v.status === 'elevated');
+  if (criticalValuesWarning.length > 0) {
+    alerts.push({
+      type: 'danger',
+      message: `${criticalValuesWarning.length} Gesundheitswert${criticalValuesWarning.length > 1 ? 'e' : ''} außerhalb der Norm`,
+      icon: '🚨'
+    });
+  }
+
+  // Aktivitäts-Feed (Mock-Daten)
+  const recentActivities = [
+    { date: '03.12.2024', type: 'document', message: 'Neuer Laborbefund hochgeladen' },
+    { date: '01.12.2024', type: 'message', message: `Nachricht von ${currentUser.primaryDoctor.name}` },
+    { date: '28.11.2024', type: 'appointment', message: 'Termin wahrgenommen' },
+    { date: '20.11.2024', type: 'health', message: 'Gesundheitswerte aktualisiert' },
+  ];
+
   return (
     <div className="page-container">
-      <div className="home-header">
-        <h1>Gesundheitsübersicht</h1>
-        <p>Willkommen, {currentUser.name}</p>
+      {/* Header mit Begrüßung */}
+      <div className="dashboard-header">
+        <div className="welcome-section">
+          <h1>Willkommen zurück, {currentUser.name.split(' ')[0]}!</h1>
+          <p className="dashboard-subtitle">Hier ist Ihre Gesundheitsübersicht</p>
+        </div>
       </div>
 
-      <div className="home-grid">
-        {/* Persönliche Stammdaten */}
-        <div className="info-card personal-data">
-          <h2>Persönliche Daten</h2>
-          <div className="data-grid">
-            <div className="data-item">
-              <span className="label">Name:</span>
-              <span className="value">{currentUser.name}</span>
-            </div>
-            <div className="data-item">
-              <span className="label">Geburtsdatum:</span>
-              <span className="value">{currentUser.birthDate}</span>
-            </div>
-            <div className="data-item">
-              <span className="label">Geschlecht:</span>
-              <span className="value">{currentUser.gender}</span>
-            </div>
-            <div className="data-item address-item">
-              <span className="label">Adresse:</span>
-              <span className="value address">
-                <span className="address-street">{currentUser.address.street}</span>
-                <span className="address-city">{currentUser.address.city}</span>
-                <span className="address-country">{currentUser.address.country}</span>
-              </span>
-            </div>
-            <div className="data-item">
-              <span className="label">Telefon:</span>
-              <span className="value phone">{currentUser.phone}</span>
-            </div>
-            <div className="data-item">
-              <span className="label">E-Mail:</span>
-              <span className="value">{currentUser.email}</span>
-            </div>
-            <div className="data-item">
-              <span className="label">AHV-Nummer:</span>
-              <span className="value">{currentUser.ahvNumber}</span>
-            </div>
-            <div className="data-item">
-              <span className="label">Blutgruppe:</span>
-              <span className="value blood-type">{currentUser.bloodType}</span>
-            </div>
-          </div>
-
-          {currentUser.allergies.length > 0 && (
-            <div className="allergies-section">
-              <span className="label">⚠️ Allergien:</span>
-              <div className="allergy-tags">
-                {currentUser.allergies.map((allergy, index) => (
-                  <span key={index} className="allergy-tag">{allergy}</span>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Kritische Werte */}
-        <div className="info-card critical-values">
-          <h2>⚕️ Wichtige Gesundheitswerte</h2>
-          {currentUser.criticalValues.map((value, index) => (
-            <div key={index} className={`value-item ${value.status}`}>
-              <div className="value-header">
-                <span className="value-name">{value.name}</span>
-                <span className="value-date">{value.date}</span>
-              </div>
-              <div className="value-data">
-                <span className="value-result">{value.value}</span>
-                <span className="value-reference">Referenz: {value.reference}</span>
-              </div>
-              {value.status === 'warning' && (
-                <div className="value-warning">⚠️ Wert außerhalb des Normbereichs</div>
-              )}
-              {value.status === 'elevated' && (
-                <div className="value-elevated">📈 Leicht erhöht</div>
-              )}
+      {/* Alert-Bereich */}
+      {alerts.length > 0 && (
+        <div className="alerts-container">
+          {alerts.map((alert, index) => (
+            <div key={index} className={`alert alert-${alert.type}`}>
+              <span className="alert-icon">{alert.icon}</span>
+              <span className="alert-message">{alert.message}</span>
             </div>
           ))}
         </div>
+      )}
 
-        {/* Krankenkasse & Versicherungen */}
-        <div className="info-card insurance-info">
-          <h2>🏥 Krankenkasse & Versicherungen</h2>
-          <div className="insurance-main">
-            <div className="data-item">
-              <span className="label">Krankenkasse:</span>
-              <span className="value primary">{currentUser.insuranceData.healthInsurance}</span>
-            </div>
-            <div className="data-item">
-              <span className="label">Versicherungsnummer:</span>
-              <span className="value">{currentUser.insuranceData.insuranceNumber}</span>
-            </div>
-            <div className="data-item">
-              <span className="label">Versicherungsmodell:</span>
-              <span className="value">{currentUser.insuranceData.insuranceType}</span>
-            </div>
+      {/* Dashboard Grid */}
+      <div className="dashboard-grid">
+        {/* Nächste Termine Widget */}
+        <div className="dashboard-widget appointments-widget">
+          <div className="widget-header">
+            <h2>📅 Anstehende Termine</h2>
+            <button className="widget-action">Alle anzeigen</button>
           </div>
-
-          {currentUser.insuranceData.additionalInsurances.length > 0 && (
-            <div className="additional-insurances">
-              <span className="label">Zusatzversicherungen:</span>
-              <ul>
-                {currentUser.insuranceData.additionalInsurances.map((insurance, index) => (
-                  <li key={index}>{insurance}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-
-        {/* Hausarzt */}
-        <div className="info-card doctor-info">
-          <h2>👨‍⚕️ Hausarzt</h2>
-          <div className="doctor-details">
-            <div className="doctor-name">{currentUser.primaryDoctor.name}</div>
-            <div className="doctor-specialty">{currentUser.primaryDoctor.specialty}</div>
-            <div className="doctor-contact">
-              <div className="data-item">
-                <span className="label">📞 Telefon:</span>
-                <span className="value">{currentUser.primaryDoctor.phone}</span>
-              </div>
-              <div className="data-item">
-                <span className="label">📍 Adresse:</span>
-                <span className="value">{currentUser.primaryDoctor.address}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Notfallkontakt */}
-        <div className="info-card emergency-contact">
-          <h2>🚨 Notfallkontakt</h2>
-          <div className="emergency-details">
-            <div className="contact-name">{currentUser.emergencyContact.name}</div>
-            <div className="contact-relationship">{currentUser.emergencyContact.relationship}</div>
-            <div className="contact-phones">
-              <div className="data-item">
-                <span className="label">📱 Mobil:</span>
-                <span className="value phone">{currentUser.emergencyContact.phone}</span>
-              </div>
-              <div className="data-item">
-                <span className="label">☎️ Festnetz:</span>
-                <span className="value phone">{currentUser.emergencyContact.alternativePhone}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Aktuelle Medikamente */}
-        <div className="info-card medications">
-          <h2>💊 Aktuelle Medikation</h2>
-          <div className="medications-list">
-            {currentUser.currentMedications.map((med, index) => (
-              <div key={index} className="medication-item">
-                <div className="med-name">{med.name}</div>
-                <div className="med-details">
-                  <span className="med-dosage">{med.dosage}</span>
-                  <span className="med-frequency">{med.frequency}</span>
+          <div className="widget-content">
+            {currentUser.upcomingAppointments && currentUser.upcomingAppointments.length > 0 ? (
+              currentUser.upcomingAppointments.slice(0, 3).map((appointment, index) => (
+                <div key={index} className="appointment-card">
+                  <div className="appointment-date-badge">
+                    <span className="date-day">{appointment.date.split('.')[0]}</span>
+                    <span className="date-month">{appointment.date.split('.')[1]}</span>
+                  </div>
+                  <div className="appointment-info">
+                    <div className="appointment-type">{appointment.type}</div>
+                    <div className="appointment-meta">
+                      <span>{appointment.doctor}</span>
+                      <span className="appointment-time">{appointment.time} Uhr</span>
+                    </div>
+                  </div>
                 </div>
-                <div className="med-indication">{med.indication}</div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <p className="no-data">Keine anstehenden Termine</p>
+            )}
           </div>
         </div>
 
-        {/* Chronische Erkrankungen */}
-        <div className="info-card chronic-conditions">
-          <h2>📋 Diagnosen</h2>
-          <ul className="conditions-list">
-            {currentUser.chronicConditions.map((condition, index) => (
-              <li key={index}>{condition}</li>
-            ))}
-          </ul>
+        {/* Gesundheitswerte Trend */}
+        <div className="dashboard-widget health-trend-widget">
+          <div className="widget-header">
+            <h2>📊 Gesundheitstrends</h2>
+            <button className="widget-action">Details</button>
+          </div>
+          <div className="widget-content">
+            <ResponsiveContainer width="100%" height={250}>
+              <LineChart data={healthTrendData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+                <XAxis dataKey="date" stroke="#666" />
+                <YAxis stroke="#666" />
+                <Tooltip
+                  contentStyle={{ backgroundColor: '#fff', border: '1px solid #ddd', borderRadius: '8px' }}
+                />
+                <Legend />
+                <Line type="monotone" dataKey="blutdruck" stroke="#2196F3" strokeWidth={2} name="Blutdruck (sys)" />
+                <Line type="monotone" dataKey="puls" stroke="#4CAF50" strokeWidth={2} name="Puls" />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
         </div>
 
-        {/* Anstehende Termine */}
-        <div className="info-card appointments">
-          <h2>📅 Anstehende Termine</h2>
-          <div className="appointments-list">
-            {currentUser.upcomingAppointments.map((appointment, index) => (
-              <div key={index} className="appointment-item">
-                <div className="appointment-type">{appointment.type}</div>
-                <div className="appointment-details">
-                  <span className="appointment-doctor">{appointment.doctor}</span>
-                  <span className="appointment-datetime">
-                    {appointment.date} um {appointment.time}
-                  </span>
+        {/* Aktuelle Gesundheitswerte */}
+        <div className="dashboard-widget health-values-widget">
+          <div className="widget-header">
+            <h2>⚕️ Aktuelle Werte</h2>
+          </div>
+          <div className="widget-content">
+            {currentUser.criticalValues && currentUser.criticalValues.map((value, index) => (
+              <div key={index} className={`health-value-item status-${value.status}`}>
+                <div className="value-info">
+                  <span className="value-name">{value.name}</span>
+                  <span className="value-date">{value.date}</span>
+                </div>
+                <div className="value-display">
+                  <span className="value-number">{value.value}</span>
+                  {value.status === 'good' && <span className="status-icon">✓</span>}
+                  {value.status === 'warning' && <span className="status-icon">⚠️</span>}
+                  {value.status === 'elevated' && <span className="status-icon">📈</span>}
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Kritische Werte Visualisierung - nur wenn kritische Werte vorhanden */}
+        {criticalValuesWarning.length > 0 && (
+          <div className="dashboard-widget critical-values-widget">
+            <div className="widget-header">
+              <h2>🚨 Kritische Werte - Handlungsbedarf</h2>
+            </div>
+            <div className="widget-content">
+              <ResponsiveContainer width="100%" height={criticalValuesWarning.length * 60 + 40}>
+                <BarChart
+                  data={criticalValuesWarning.map(v => ({
+                    name: v.name,
+                    wert: parseFloat(v.value),
+                    referenz: parseFloat(v.reference.match(/[\d.]+/)?.[0] || 0)
+                  }))}
+                  layout="vertical"
+                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+                  <XAxis type="number" />
+                  <YAxis dataKey="name" type="category" width={180} />
+                  <Tooltip
+                    contentStyle={{ backgroundColor: '#fff', border: '1px solid #ddd', borderRadius: '8px' }}
+                  />
+                  <Legend />
+                  <Bar dataKey="wert" fill="#f44336" name="Aktueller Wert" />
+                  <Bar dataKey="referenz" fill="#4CAF50" name="Zielwert" />
+                </BarChart>
+              </ResponsiveContainer>
+              <div className="critical-values-note">
+                <p><strong>Hinweis:</strong> Diese Werte liegen außerhalb des empfohlenen Bereichs. Bitte kontaktieren Sie Ihren Arzt.</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Medikation Widget */}
+        {currentUser.currentMedications && currentUser.currentMedications.length > 0 && (
+          <div className="dashboard-widget medication-widget">
+            <div className="widget-header">
+              <h2>💊 Aktuelle Medikation</h2>
+              <button className="widget-action">Details</button>
+            </div>
+            <div className="widget-content">
+              {currentUser.currentMedications.slice(0, 3).map((med, index) => (
+                <div key={index} className="medication-card">
+                  <div className="med-icon">💊</div>
+                  <div className="med-info">
+                    <div className="med-name">{med.name}</div>
+                    <div className="med-dosage">{med.dosage} - {med.frequency}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Health Goals Progress (wenn vorhanden) */}
+        {currentUser.healthGoals && currentUser.healthGoals.length > 0 && (
+          <div className="dashboard-widget goals-widget">
+            <div className="widget-header">
+              <h2>🎯 Gesundheitsziele</h2>
+            </div>
+            <div className="widget-content">
+              {currentUser.healthGoals.map((goal, index) => (
+                <div key={index} className="goal-item">
+                  <div className="goal-info">
+                    <span className="goal-name">{goal.goal}</span>
+                    <span className="goal-percentage">{goal.progress}%</span>
+                  </div>
+                  <div className="goal-progress-bar">
+                    <div
+                      className="goal-progress-fill"
+                      style={{ width: `${goal.progress}%` }}
+                    ></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Aktivitäts-Feed */}
+        <div className="dashboard-widget activity-widget">
+          <div className="widget-header">
+            <h2>🕐 Letzte Aktivitäten</h2>
+          </div>
+          <div className="widget-content">
+            {recentActivities.map((activity, index) => (
+              <div key={index} className="activity-item">
+                <div className={`activity-icon activity-${activity.type}`}>
+                  {activity.type === 'document' && '📄'}
+                  {activity.type === 'message' && '💬'}
+                  {activity.type === 'appointment' && '📅'}
+                  {activity.type === 'health' && '⚕️'}
+                </div>
+                <div className="activity-info">
+                  <div className="activity-message">{activity.message}</div>
+                  <div className="activity-date">{activity.date}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Notfall-Widget */}
+        <div className="dashboard-widget emergency-widget">
+          <div className="widget-header">
+            <h2>🚨 Notfall</h2>
+          </div>
+          <div className="widget-content">
+            <div className="emergency-info">
+              <div className="emergency-contact">
+                <span className="contact-label">Notfallkontakt:</span>
+                <span className="contact-name">{currentUser.emergencyContact.name}</span>
+                <span className="contact-phone">{currentUser.emergencyContact.phone}</span>
+              </div>
+              <button className="emergency-call-btn">Anrufen</button>
+            </div>
+            <div className="emergency-divider"></div>
+            <div className="emergency-doctor">
+              <span className="contact-label">Hausarzt:</span>
+              <span className="contact-name">{currentUser.primaryDoctor.name}</span>
+              <span className="contact-phone">{currentUser.primaryDoctor.phone}</span>
+            </div>
           </div>
         </div>
       </div>
