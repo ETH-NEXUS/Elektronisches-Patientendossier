@@ -1,86 +1,16 @@
 import './Pages.css';
 import './Visualisierungen.css';
+import { useUser } from '../context/UserContext';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine, Cell } from 'recharts';
 
 function Visualisierungen() {
-  // Simulierte Labordaten - später aus Dokumenten extrahiert
-  const labDataTrends = {
-    hba1c: [
-      { date: 'Jan 24', value: 7.8, reference: 6.5 },
-      { date: 'Mrz 24', value: 7.5, reference: 6.5 },
-      { date: 'Mai 24', value: 7.3, reference: 6.5 },
-      { date: 'Jul 24', value: 7.4, reference: 6.5 },
-      { date: 'Sep 24', value: 7.2, reference: 6.5 },
-      { date: 'Nov 24', value: 7.2, reference: 6.5 }
-    ],
-    cholesterol: [
-      { date: 'Jan 24', ldl: 180, hdl: 45, reference: 116 },
-      { date: 'Mrz 24', ldl: 175, hdl: 48, reference: 116 },
-      { date: 'Mai 24', ldl: 170, hdl: 50, reference: 116 },
-      { date: 'Jul 24', ldl: 168, hdl: 52, reference: 116 },
-      { date: 'Sep 24', ldl: 165, hdl: 53, reference: 116 },
-      { date: 'Nov 24', ldl: 165, hdl: 55, reference: 116 }
-    ],
-    bloodPressure: [
-      { date: 'Jan 24', systolic: 152, diastolic: 95, refSys: 140, refDia: 90 },
-      { date: 'Feb 24', systolic: 148, diastolic: 93, refSys: 140, refDia: 90 },
-      { date: 'Mrz 24', systolic: 145, diastolic: 92, refSys: 140, refDia: 90 },
-      { date: 'Apr 24', systolic: 143, diastolic: 90, refSys: 140, refDia: 90 },
-      { date: 'Mai 24', systolic: 142, diastolic: 89, refSys: 140, refDia: 90 },
-      { date: 'Jun 24', systolic: 140, diastolic: 88, refSys: 140, refDia: 90 },
-      { date: 'Jul 24', systolic: 138, diastolic: 87, refSys: 140, refDia: 90 },
-      { date: 'Aug 24', systolic: 141, diastolic: 89, refSys: 140, refDia: 90 },
-      { date: 'Sep 24', systolic: 143, diastolic: 90, refSys: 140, refDia: 90 },
-      { date: 'Okt 24', systolic: 144, diastolic: 91, refSys: 140, refDia: 90 },
-      { date: 'Nov 24', systolic: 145, diastolic: 92, refSys: 140, refDia: 90 }
-    ]
-  };
+  const { currentUser } = useUser();
 
-  // Aktuelle Vitalwerte
-  const currentVitals = [
-    { name: 'HbA1c', value: 7.2, max: 10, reference: 6.5, unit: '%', status: 'warning' },
-    { name: 'LDL', value: 165, max: 200, reference: 116, unit: 'mg/dl', status: 'warning' },
-    { name: 'HDL', value: 55, max: 100, reference: 40, unit: 'mg/dl', status: 'good' },
-    { name: 'Blutdruck Sys', value: 145, max: 180, reference: 140, unit: 'mmHg', status: 'elevated' },
-    { name: 'Blutdruck Dia', value: 92, max: 120, reference: 90, unit: 'mmHg', status: 'elevated' },
-  ];
-
-  // Medikamenten Timeline
-  const medicationTimeline = [
-    {
-      name: 'Metformin',
-      periods: [
-        { start: '2023-01', end: '2024-12', dosage: '850mg 2x täglich', active: true }
-      ]
-    },
-    {
-      name: 'Ramipril',
-      periods: [
-        { start: '2023-06', end: '2024-12', dosage: '5mg 1x täglich', active: true }
-      ]
-    },
-    {
-      name: 'Atorvastatin',
-      periods: [
-        { start: '2023-09', end: '2024-12', dosage: '20mg 1x abends', active: true }
-      ]
-    },
-    {
-      name: 'Ibuprofen',
-      periods: [
-        { start: '2023-02', end: '2023-04', dosage: '400mg bei Bedarf', active: false }
-      ]
-    }
-  ];
-
-  // Impfstatus
-  const vaccinations = [
-    { name: 'Grippe', lastDate: '2024-10-20', nextDue: '2025-10-20', status: 'aktuell', daysUntilDue: 328 },
-    { name: 'COVID-19', lastDate: '2024-03-10', nextDue: '2025-03-10', status: 'aktuell', daysUntilDue: 103 },
-    { name: 'Tetanus', lastDate: '2022-05-15', nextDue: '2032-05-15', status: 'aktuell', daysUntilDue: 2696 },
-    { name: 'FSME', lastDate: '2021-08-10', nextDue: '2024-08-10', status: 'überfällig', daysUntilDue: -109 },
-    { name: 'Pneumokokken', lastDate: null, nextDue: '2025-01-01', status: 'empfohlen', daysUntilDue: 35 }
-  ];
+  // User-spezifische Daten
+  const labDataTrends = currentUser.healthData?.labTrends || {};
+  const currentVitals = currentUser.healthData?.currentVitals || [];
+  const medicationTimeline = currentUser.healthData?.medicationTimeline || [];
+  const vaccinations = currentUser.healthData?.vaccinations || [];
 
   const getVitalColor = (status) => {
     switch(status) {
@@ -108,6 +38,7 @@ function Visualisierungen() {
       <div className="viz-grid">
 
         {/* 1. Laborwerte-Trends: HbA1c */}
+        {labDataTrends.hba1c && labDataTrends.hba1c.length > 0 && (
         <div className="viz-card full-width">
           <h2>📊 HbA1c Verlauf (Langzeitzucker)</h2>
           <div className="chart-container">
@@ -126,12 +57,14 @@ function Visualisierungen() {
               </LineChart>
             </ResponsiveContainer>
             <div className="chart-info">
-              Aktueller Wert: <strong>7.2%</strong> | Zielwert: <strong>&lt; 6.5%</strong> | Trend: <span className="trend-improving">↓ Verbesserung</span>
+              Aktueller Wert: <strong>{labDataTrends.hba1c[labDataTrends.hba1c.length-1]?.value}%</strong> | Zielwert: <strong>&lt; {labDataTrends.hba1c[0]?.reference}%</strong>
             </div>
           </div>
         </div>
+        )}
 
         {/* Cholesterin Verlauf */}
+        {labDataTrends.cholesterol && labDataTrends.cholesterol.length > 0 && (
         <div className="viz-card full-width">
           <h2>📊 Cholesterin Verlauf</h2>
           <div className="chart-container">
@@ -151,12 +84,14 @@ function Visualisierungen() {
               </LineChart>
             </ResponsiveContainer>
             <div className="chart-info">
-              LDL: <strong>165 mg/dl</strong> | HDL: <strong>55 mg/dl</strong> | LDL-Ziel: <strong>&lt; 116 mg/dl</strong>
+              LDL: <strong>{labDataTrends.cholesterol[labDataTrends.cholesterol.length-1]?.ldl} mg/dl</strong> | HDL: <strong>{labDataTrends.cholesterol[labDataTrends.cholesterol.length-1]?.hdl} mg/dl</strong> | LDL-Ziel: <strong>&lt; {labDataTrends.cholesterol[0]?.reference} mg/dl</strong>
             </div>
           </div>
         </div>
+        )}
 
         {/* Blutdruck Verlauf */}
+        {labDataTrends.bloodPressure && labDataTrends.bloodPressure.length > 0 && (
         <div className="viz-card full-width">
           <h2>📊 Blutdruck Verlauf</h2>
           <div className="chart-container">
@@ -177,12 +112,14 @@ function Visualisierungen() {
               </LineChart>
             </ResponsiveContainer>
             <div className="chart-info">
-              Aktuell: <strong>145/92 mmHg</strong> | Zielwert: <strong>&lt; 140/90 mmHg</strong> | Trend: <span className="trend-stable">→ Stabil</span>
+              Aktuell: <strong>{labDataTrends.bloodPressure[labDataTrends.bloodPressure.length-1]?.systolic}/{labDataTrends.bloodPressure[labDataTrends.bloodPressure.length-1]?.diastolic} mmHg</strong> | Zielwert: <strong>&lt; {labDataTrends.bloodPressure[0]?.refSys}/{labDataTrends.bloodPressure[0]?.refDia} mmHg</strong>
             </div>
           </div>
         </div>
+        )}
 
         {/* 2. Vitalwerte Dashboard */}
+        {currentVitals.length > 0 && (
         <div className="viz-card full-width">
           <h2>💓 Aktuelle Vitalwerte Dashboard</h2>
 
@@ -240,8 +177,10 @@ function Visualisierungen() {
             })}
           </div>
         </div>
+        )}
 
         {/* 3. Medikamenten Timeline */}
+        {medicationTimeline.length > 0 && (
         <div className="viz-card full-width">
           <h2>💊 Medikamenten Timeline</h2>
           <div className="medication-timeline">
@@ -261,15 +200,34 @@ function Visualisierungen() {
                 </div>
                 <div className="timeline-bars">
                   {med.periods.map((period, pIndex) => {
-                    const startMonth = parseInt(period.start.split('-')[1]);
-                    const startYear = parseInt(period.start.split('-')[0]);
+                    const [startYear, startMonth] = period.start.split('-').map(Number);
+                    const [endYear, endMonth] = period.end.split('-').map(Number);
+
+                    // Timeline von 2008 bis 2026 (18 Jahre)
+                    const timelineStart = 2008;
+                    const timelineEnd = 2026;
+                    const totalMonths = (timelineEnd - timelineStart) * 12;
+
+                    // Berechne Start- und End-Position in Monaten ab 2008
+                    const startMonthsFromBegin = (startYear - timelineStart) * 12 + startMonth;
+                    const endMonthsFromBegin = (endYear - timelineStart) * 12 + endMonth;
+                    const duration = endMonthsFromBegin - startMonthsFromBegin;
+
+                    // Konvertiere zu Prozent
+                    const leftPercent = (startMonthsFromBegin / totalMonths) * 100;
+                    const widthPercent = (duration / totalMonths) * 100;
+
                     const isActive = period.active;
 
                     return (
                       <div
                         key={pIndex}
                         className={`timeline-bar ${isActive ? 'active' : 'past'}`}
-                        title={period.dosage}
+                        style={{
+                          left: `${leftPercent}%`,
+                          width: `${widthPercent}%`
+                        }}
+                        title={`${period.dosage} (${period.start} - ${period.end})`}
                       >
                         <span className="dosage-label">{period.dosage}</span>
                       </div>
@@ -280,8 +238,10 @@ function Visualisierungen() {
             ))}
           </div>
         </div>
+        )}
 
         {/* 4. Impfstatus */}
+        {vaccinations.length > 0 && (
         <div className="viz-card full-width">
           <h2>💉 Impfstatus & Auffrischungen</h2>
           <div className="vaccination-status">
@@ -328,6 +288,7 @@ function Visualisierungen() {
             ))}
           </div>
         </div>
+        )}
 
       </div>
     </div>

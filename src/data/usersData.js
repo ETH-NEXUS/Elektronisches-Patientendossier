@@ -697,45 +697,57 @@ export const usersData = {
       ],
       medicationTimeline: [
         {
-          name: 'Metformin',
-          periods: [
-            { start: '2010-04', end: '2024-12', dosage: '500mg 2x täglich', active: true }
-          ]
-        },
-        {
           name: 'Ramipril',
           periods: [
-            { start: '2008-02', end: '2024-12', dosage: '5mg 1x morgens', active: true }
+            { start: '2008-02', end: '2025-12', dosage: '5mg 1x morgens', active: true }
           ]
         },
         {
-          name: 'Furosemid',
+          name: 'Metformin',
           periods: [
-            { start: '2015-08', end: '2024-12', dosage: '40mg 1x morgens', active: true }
-          ]
-        },
-        {
-          name: 'Bisoprolol',
-          periods: [
-            { start: '2015-08', end: '2024-12', dosage: '2.5mg 1x täglich', active: true }
+            { start: '2010-04', end: '2025-12', dosage: '500mg 2x täglich', active: true }
           ]
         },
         {
           name: 'Calcium + Vitamin D',
           periods: [
-            { start: '2012-11', end: '2024-12', dosage: '1 Tablette täglich', active: true }
-          ]
-        },
-        {
-          name: 'Pantoprazol',
-          periods: [
-            { start: '2016-03', end: '2024-12', dosage: '20mg 1x morgens', active: true }
+            { start: '2012-11', end: '2025-12', dosage: '1 Tablette täglich', active: true }
           ]
         },
         {
           name: 'Simvastatin',
           periods: [
             { start: '2013-06', end: '2020-12', dosage: '20mg abends', active: false }
+          ]
+        },
+        {
+          name: 'Furosemid',
+          periods: [
+            { start: '2015-08', end: '2025-12', dosage: '40mg 1x morgens', active: true }
+          ]
+        },
+        {
+          name: 'Bisoprolol',
+          periods: [
+            { start: '2015-08', end: '2025-12', dosage: '2.5mg 1x täglich', active: true }
+          ]
+        },
+        {
+          name: 'Pantoprazol',
+          periods: [
+            { start: '2016-03', end: '2025-12', dosage: '20mg 1x morgens', active: true }
+          ]
+        },
+        {
+          name: 'Ibuprofen',
+          periods: [
+            { start: '2019-02', end: '2020-08', dosage: '400mg bei Bedarf', active: false }
+          ]
+        },
+        {
+          name: 'Donepezil',
+          periods: [
+            { start: '2022-06', end: '2025-12', dosage: '5mg 1x abends', active: true }
           ]
         }
       ],

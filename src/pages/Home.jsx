@@ -192,7 +192,7 @@ function Home() {
           <div className="dashboard-widget medication-widget">
             <div className="widget-header">
               <h2>💊 Aktuelle Medikation</h2>
-              <button className="widget-action">Details</button>
+              <button className="widget-action export-btn">📄 Exportieren</button>
             </div>
             <div className="widget-content">
               {currentUser.currentMedications.slice(0, 3).map((med, index) => (
