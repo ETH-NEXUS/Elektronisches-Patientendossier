@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
-import { FaFileAlt, FaSyringe, FaXRay, FaFileMedical, FaPills, FaHeartbeat, FaTint, FaStethoscope, FaTimes } from 'react-icons/fa';
+import { FaFileAlt, FaSyringe, FaXRay, FaFileMedical, FaPills, FaHeartbeat, FaTint, FaStethoscope, FaTimes, FaEllipsisV, FaEye, FaEdit, FaTrash } from 'react-icons/fa';
 import { sampleDocuments, detectDocumentCategory, getDefaultDate } from '../data/sampleDocuments';
 import './Dokumente.css';
 
@@ -41,16 +41,27 @@ const categoryMapping = {
 };
 
 function Dokumente() {
-  const { currentUser, addDocument } = useUser();
+  const { currentUser, addDocument, updateDocument, deleteDocument } = useUser();
   const [searchParams] = useSearchParams();
   const kategorie = searchParams.get('kategorie');
 
-  // Modal State
+  // Modal State (Hinzufügen)
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [customTitle, setCustomTitle] = useState('');
   const [selectedSampleDoc, setSelectedSampleDoc] = useState('');
   const [autoDate, setAutoDate] = useState('');
   const [autoCategory, setAutoCategory] = useState('');
+
+  // 3-Punkte-Menü State
+  const [openMenuId, setOpenMenuId] = useState(null);
+
+  // Anschauen Modal State
+  const [viewDocument, setViewDocument] = useState(null);
+
+  // Bearbeiten Modal State
+  const [editDocument, setEditDocument] = useState(null);
+  const [editTitle, setEditTitle] = useState('');
+  const [editCategory, setEditCategory] = useState('');
 
   const filteredDocuments = useMemo(() => {
     const userDocuments = currentUser.documents || [];
@@ -162,6 +173,46 @@ function Dokumente() {
     closeModal();
   };
 
+  // 3-Punkte-Menü Funktionen
+  const toggleMenu = (docId) => {
+    setOpenMenuId(openMenuId === docId ? null : docId);
+  };
+
+  const handleView = (doc) => {
+    setViewDocument(doc);
+    setOpenMenuId(null);
+  };
+
+  const handleEdit = (doc) => {
+    setEditDocument(doc);
+    setEditTitle(doc.title);
+    setEditCategory(doc.category);
+    setOpenMenuId(null);
+  };
+
+  const handleDelete = (docId) => {
+    if (window.confirm('Möchten Sie dieses Dokument wirklich löschen?')) {
+      deleteDocument(docId);
+      setOpenMenuId(null);
+    }
+  };
+
+  const saveEdit = () => {
+    if (!editTitle.trim()) {
+      alert('Bitte geben Sie einen Titel ein.');
+      return;
+    }
+
+    updateDocument(editDocument.id, {
+      title: editTitle,
+      category: editCategory
+    });
+
+    setEditDocument(null);
+    setEditTitle('');
+    setEditCategory('');
+  };
+
   return (
     <div className="dokumente-container">
       <div className="dokumente-header">
@@ -268,8 +319,130 @@ function Dokumente() {
                 <p className="document-simple-category">{doc.category}</p>
                 {doc.date && <p className="document-simple-date">{new Date(doc.date).toLocaleDateString('de-DE')}</p>}
               </div>
+
+              {/* 3-Punkte-Menü */}
+              <div className="document-menu-container">
+                <button
+                  className="document-menu-btn"
+                  onClick={() => toggleMenu(doc.id)}
+                >
+                  <FaEllipsisV />
+                </button>
+
+                {openMenuId === doc.id && (
+                  <div className="document-menu-dropdown">
+                    <button onClick={() => handleView(doc)}>
+                      <FaEye /> Anschauen
+                    </button>
+                    <button onClick={() => handleEdit(doc)}>
+                      <FaEdit /> Bearbeiten
+                    </button>
+                    <button onClick={() => handleDelete(doc.id)} className="delete-btn">
+                      <FaTrash /> Löschen
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Anschauen Modal */}
+      {viewDocument && (
+        <div className="modal-overlay" onClick={() => setViewDocument(null)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Dokument anschauen</h2>
+              <button className="modal-close-btn" onClick={() => setViewDocument(null)}>
+                <FaTimes />
+              </button>
+            </div>
+
+            <div className="modal-body">
+              <div className="view-document-details">
+                <div className="view-item">
+                  <span className="view-label">Titel:</span>
+                  <span className="view-value">{viewDocument.title}</span>
+                </div>
+                <div className="view-item">
+                  <span className="view-label">Kategorie:</span>
+                  <span className="view-value">{viewDocument.category}</span>
+                </div>
+                <div className="view-item">
+                  <span className="view-label">Typ:</span>
+                  <span className="view-value">{viewDocument.type}</span>
+                </div>
+                <div className="view-item">
+                  <span className="view-label">Datum:</span>
+                  <span className="view-value">{new Date(viewDocument.date).toLocaleDateString('de-DE')}</span>
+                </div>
+                <div className="view-item">
+                  <span className="view-label">Status:</span>
+                  <span className="view-value">{viewDocument.status}</span>
+                </div>
+                {viewDocument.tags && viewDocument.tags.length > 0 && (
+                  <div className="view-item">
+                    <span className="view-label">Tags:</span>
+                    <span className="view-value">{viewDocument.tags.join(', ')}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="modal-footer">
+              <button className="btn-cancel" onClick={() => setViewDocument(null)}>Schließen</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Bearbeiten Modal */}
+      {editDocument && (
+        <div className="modal-overlay" onClick={() => setEditDocument(null)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Dokument bearbeiten</h2>
+              <button className="modal-close-btn" onClick={() => setEditDocument(null)}>
+                <FaTimes />
+              </button>
+            </div>
+
+            <div className="modal-body">
+              <div className="form-group">
+                <label htmlFor="edit-title">Titel</label>
+                <input
+                  type="text"
+                  id="edit-title"
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                  className="form-input"
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="edit-category">Kategorie</label>
+                <select
+                  id="edit-category"
+                  value={editCategory}
+                  onChange={(e) => setEditCategory(e.target.value)}
+                  className="form-select"
+                >
+                  <option value="Labor">Labor</option>
+                  <option value="Impfungen">Impfungen</option>
+                  <option value="Bildgebung">Bildgebung</option>
+                  <option value="Diagnosen">Diagnosen</option>
+                  <option value="Medikamente">Medikamente</option>
+                  <option value="Vorsorge">Vorsorge</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="modal-footer">
+              <button className="btn-cancel" onClick={() => setEditDocument(null)}>Abbrechen</button>
+              <button className="btn-submit" onClick={saveEdit}>Speichern</button>
+            </div>
+          </div>
         </div>
       )}
     </div>

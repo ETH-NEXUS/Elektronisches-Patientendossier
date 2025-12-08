@@ -35,8 +35,30 @@ export const UserProvider = ({ children }) => {
     }));
   };
 
+  const updateDocument = (documentId, updatedData) => {
+    setUsers(prevUsers => ({
+      ...prevUsers,
+      [currentUserId]: {
+        ...prevUsers[currentUserId],
+        documents: prevUsers[currentUserId].documents.map(doc =>
+          doc.id === documentId ? { ...doc, ...updatedData } : doc
+        )
+      }
+    }));
+  };
+
+  const deleteDocument = (documentId) => {
+    setUsers(prevUsers => ({
+      ...prevUsers,
+      [currentUserId]: {
+        ...prevUsers[currentUserId],
+        documents: prevUsers[currentUserId].documents.filter(doc => doc.id !== documentId)
+      }
+    }));
+  };
+
   return (
-    <UserContext.Provider value={{ currentUser, switchUser, getAllUsers, currentUserId, addDocument }}>
+    <UserContext.Provider value={{ currentUser, switchUser, getAllUsers, currentUserId, addDocument, updateDocument, deleteDocument }}>
       {children}
     </UserContext.Provider>
   );
