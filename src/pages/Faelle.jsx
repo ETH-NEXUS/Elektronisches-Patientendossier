@@ -1,18 +1,20 @@
 import { useState, useMemo } from 'react';
+import { useUser } from '../context/UserContext';
 import DocumentFilters from '../components/Documents/DocumentFilters';
 import DocumentListView from '../components/Documents/DocumentListView';
 import DocumentGridView from '../components/Documents/DocumentGridView';
-import { documents, statusOptions, sortOptions } from '../data/documentsData';
+import { statusOptions, sortOptions } from '../data/documentsData';
 import './Faelle.css';
 
 function Faelle() {
+  const { currentUser } = useUser();
   const [statusFilter, setStatusFilter] = useState('alle');
   const [sortBy, setSortBy] = useState('date-desc');
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState('list');
 
   const filteredAndSortedDocuments = useMemo(() => {
-    let result = [...documents];
+    let result = [...(currentUser.documents || [])];
 
     if (statusFilter !== 'alle') {
       result = result.filter(doc => doc.status === statusFilter);

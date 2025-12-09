@@ -55,7 +55,7 @@ export const usersData = {
     currentMedications: [],
 
     upcomingAppointments: [
-      { type: "Sportmedizinische Untersuchung", doctor: "Dr. Keller", date: "15.12.2024", time: "14:00" }
+      { type: "Sportmedizinische Untersuchung", doctor: "Dr. Keller", date: "15.12.2024", time: "14:00", source: "Termindokument von Dr. Keller" }
     ],
 
     healthGoals: [
@@ -201,9 +201,9 @@ export const usersData = {
     ],
 
     upcomingAppointments: [
-      { type: "Schwangerschaftskontrolle", doctor: "Dr. Weber", date: "02.12.2024", time: "10:00" },
-      { type: "Ultraschall", doctor: "Dr. Weber", date: "16.12.2024", time: "14:30" },
-      { type: "Geburtsvorbereitungskurs", doctor: "Hebamme Lisa", date: "10.12.2024", time: "18:00" }
+      { type: "Schwangerschaftskontrolle", doctor: "Dr. Weber", date: "02.12.2024", time: "10:00", source: "Termindokument von Dr. Weber" },
+      { type: "Ultraschall", doctor: "Dr. Weber", date: "16.12.2024", time: "14:30", source: "Überweisungsdokument von Dr. Weber" },
+      { type: "Geburtsvorbereitungskurs", doctor: "Hebamme Lisa", date: "10.12.2024", time: "18:00", source: "Anmeldungsbestätigung Hebammenpraxis" }
     ],
 
     healthGoals: [
@@ -398,8 +398,8 @@ export const usersData = {
     ],
 
     upcomingAppointments: [
-      { type: "Kardiologie-Kontrolle", doctor: "Prof. Dr. Schneider", date: "12.12.2024", time: "11:00" },
-      { type: "Belastungs-EKG", doctor: "Prof. Dr. Schneider", date: "18.12.2024", time: "09:00" }
+      { type: "Kardiologie-Kontrolle", doctor: "Prof. Dr. Schneider", date: "12.12.2024", time: "11:00", source: "Termindokument von Prof. Dr. Schneider" },
+      { type: "Belastungs-EKG", doctor: "Prof. Dr. Schneider", date: "18.12.2024", time: "09:00", source: "Überweisungsdokument Kardiologie" }
     ],
 
     healthGoals: [
@@ -611,9 +611,9 @@ export const usersData = {
     ],
 
     upcomingAppointments: [
-      { type: "Geriatrie-Kontrolle", doctor: "Dr. Zimmermann", date: "28.11.2024", time: "10:00" },
-      { type: "Diabetes-Beratung", doctor: "Diabetesberaterin", date: "05.12.2024", time: "14:00" },
-      { type: "Physiotherapie", doctor: "Therapeut Müller", date: "29.11.2024", time: "15:00" }
+      { type: "Geriatrie-Kontrolle", doctor: "Dr. Zimmermann", date: "28.11.2024", time: "10:00", source: "Termindokument von Dr. Zimmermann" },
+      { type: "Diabetes-Beratung", doctor: "Diabetesberaterin", date: "05.12.2024", time: "14:00", source: "Überweisungsdokument Diabetes" },
+      { type: "Physiotherapie", doctor: "Therapeut Müller", date: "29.11.2024", time: "15:00", source: "Verordnung Physiotherapie" }
     ],
 
     healthGoals: [

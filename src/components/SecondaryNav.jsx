@@ -56,10 +56,10 @@ function SecondaryNav() {
           )}
         </div>
         <NavLink
-          to="/visualisierungen"
+          to="/labor"
           className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}
         >
-          Visualisierungen
+          Labor
         </NavLink>
         <NavLink
           to="/freigaben"

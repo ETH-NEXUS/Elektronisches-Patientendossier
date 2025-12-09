@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EPD Konzept – Präsentation</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: rgba(15, 23, 42, 0.75);
+      --panel-strong: rgba(15, 23, 42, 0.92);
+      --accent: #22d3ee;
+      --accent-2: #a855f7;
+      --accent-3: #f97316;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --card: #0b1223;
+      --border: rgba(255, 255, 255, 0.08);
+      --shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 40px 18px 64px;
+      font-family: "DM Sans", "Inter", "SF Pro Display", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(120% 120% at 20% 20%, rgba(168, 85, 247, 0.25), transparent 40%),
+                  radial-gradient(100% 100% at 80% 0%, rgba(34, 211, 238, 0.25), transparent 35%),
+                  linear-gradient(135deg, #0b1223 0%, #0f172a 45%, #0b1020 100%);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .deck {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .slide {
+      background: linear-gradient(180deg, var(--panel) 0%, var(--panel-strong) 100%);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 28px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 34px 28px;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(70% 70% at 70% 20%, rgba(34, 211, 238, 0.15), transparent 60%),
+                  radial-gradient(60% 60% at 20% 70%, rgba(168, 85, 247, 0.18), transparent 50%);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      font-size: 11px;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(28px, 4vw, 38px);
+      line-height: 1.2;
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      font-size: 20px;
+    }
+
+    p { margin: 0 0 10px; color: var(--muted); }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .tag {
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text);
+      font-size: 13px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .grid.two { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+    .grid.three { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card h3 {
+      margin: 0 0 8px;
+      font-size: 16px;
+    }
+
+    .pill {
+      display: inline-block;
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border);
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .list li {
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+
+    .list li:last-child { border-bottom: none; }
+
+    .callout {
+      border-left: 3px solid var(--accent);
+      padding-left: 12px;
+      color: var(--text);
+    }
+
+    .columns {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .kpi {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+
+    .kpi strong { font-size: 26px; color: #fff; }
+    .kpi span { color: var(--muted); font-size: 14px; }
+
+    .footnote {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 14px;
+    }
+
+    @media (max-width: 640px) {
+      body { padding: 20px 14px 40px; }
+      .slide { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="deck">
+    <section class="slide hero">
+      <div class="eyebrow">Konzept • EPD Experience 2025</div>
+      <h1>EPD: simpel, sichtbar, täglich nutzbar</h1>
+      <p>Kurz vorgezeigt: Die App, die wir bereits gebaut haben – klar gegliedert in die Kern-Pages, die Nutzer sofort verstehen und brauchen.</p>
+      <div class="tags">
+        <span class="tag">Adoption steigern</span>
+        <span class="tag">Selbstbestimmung</span>
+        <span class="tag">Klinisch relevant</span>
+        <span class="tag">CH-Standards (FHIR, AHV, BAG)</span>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2>Setup in 30 Sekunden</h2>
+      <div class="columns">
+        <div class="card">
+          <h3>Onboarding</h3>
+          <ul class="list">
+            <li>Stammdaten mit AHV, Sprache, Kontrast/Schriftgröße.</li>
+            <li>Import von Dokumenten (Drag & Drop oder Upload).</li>
+            <li>Automatische Kategorisierung (Labor, Bildgebung, Impfungen, Medikamente).</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Sofortiger Nutzen</h3>
+          <ul class="list">
+            <li>Home zeigt Allergien, kritische Werte, Termine, Hausarzt, Notfallkontakt.</li>
+            <li>Fälle sortiert/filtern, Dokumente und Freigaben daran hängen.</li>
+            <li>Visualisierungen: Trends (HbA1c, LDL/HDL, Blutdruck), Impfstatus.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2>Product Map (1:1 wie die App)</h2>
+      <div class="grid three">
+        <div class="card">
+          <div class="pill">Home</div>
+          <h3>Gesundheitsübersicht</h3>
+          <p>Kompakt: Stammdaten, Allergien, kritische Werte, Termine, Hausarzt, Versicherung.</p>
+        </div>
+        <div class="card">
+          <div class="pill">Fälle</div>
+          <h3>Case-first</h3>
+          <p>Suche, Filter, Status, Sortierung; List- oder Grid-View; „+ Fall hinzufügen“.</p>
+        </div>
+        <div class="card">
+          <div class="pill">Dokumente</div>
+          <h3>Auto-Kategorien</h3>
+          <p>Labor, Diagnosen, Bildgebung, Impfungen, Medikamente, Vorsorge; Thumbnails, Add-Button.</p>
+        </div>
+        <div class="card">
+          <div class="pill">Visualisierungen</div>
+          <h3>Trends & Ampeln</h3>
+          <p>HbA1c, LDL/HDL, Blutdruck, Vitalwerte-Ampel, Impfstatus mit Fälligkeit.</p>
+        </div>
+        <div class="card">
+          <div class="pill">Freigaben</div>
+          <h3>Kontrolle</h3>
+          <p>Aktive Zugriffe (toggle/widerrufen), Laufzeiten, Fälle/Dokumenttypen; Suche/Filter Ärzte.</p>
+        </div>
+        <div class="card">
+          <div class="pill">Profil & Einstellungen</div>
+          <h3>Self-Service</h3>
+          <p>Profil mit BMI/Allergien/Notfallkontakt; 2FA, Sitzungen, Export (PDF/CSV/JSON/FHIR), Barrierefreiheit.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <h2>Fokus: Schweizer Alltag</h2>
+      <div class="grid two">
+        <div class="card">
+          <h3>Sicherheit sichtbar</h3>
+          <ul class="list">
+            <li>2FA, Auto-Logout, aktive Sitzungen, Widerruf aller Freigaben als prominente Aktionen.</li>
+            <li>Transparente Access-Logs (UI-Hook in Freigaben-Platzhalter).</li>
+            <li>FHIR-Export + BAG-konforme Speicherung kommunizieren.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Alltag zuerst</h3>
+          <ul class="list">
+            <li>„Heute wichtig“ auf Home: kritische Werte, Termine, Impfungen.</li>
+            <li>Smart-Import mit automatischer Kategorisierung.</li>
+            <li>Mobile-first Layouts: Cards, klare Buttons, kurze Wege.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

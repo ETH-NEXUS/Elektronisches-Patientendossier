@@ -6,24 +6,6 @@ import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Cart
 function Home() {
   const { currentUser } = useUser();
 
-  // Mock-Daten für Gesundheitstrends (später aus echten Daten)
-  const healthTrendData = [
-    { date: '01.10', blutdruck: 115, puls: 68 },
-    { date: '08.10', blutdruck: 118, puls: 72 },
-    { date: '15.10', blutdruck: 116, puls: 70 },
-    { date: '22.10', blutdruck: 118, puls: 69 },
-    { date: '01.11', blutdruck: 117, puls: 71 },
-    { date: '20.11', blutdruck: 118, puls: 70 },
-  ];
-
-  // Dokumenten-Kategorien für Pie Chart
-  const documentStats = [
-    { name: 'Befunde', value: 12, color: '#4CAF50' },
-    { name: 'Bilder', value: 8, color: '#2196F3' },
-    { name: 'Berichte', value: 15, color: '#FF9800' },
-    { name: 'Rezepte', value: 5, color: '#9C27B0' },
-  ];
-
   // Berechne nächsten Termin
   const nextAppointment = currentUser.upcomingAppointments && currentUser.upcomingAppointments.length > 0
     ? currentUser.upcomingAppointments[0]
@@ -132,35 +114,17 @@ function Home() {
                       <span>{appointment.doctor}</span>
                       <span className="appointment-time">{appointment.time} Uhr</span>
                     </div>
+                    {appointment.source && (
+                      <div className="appointment-source">
+                        Quelle: {appointment.source}
+                      </div>
+                    )}
                   </div>
                 </div>
               ))
             ) : (
               <p className="no-data">Keine anstehenden Termine</p>
             )}
-          </div>
-        </div>
-
-        {/* Gesundheitswerte Trend */}
-        <div className="dashboard-widget health-trend-widget">
-          <div className="widget-header">
-            <h2>📊 Gesundheitstrends</h2>
-            <button className="widget-action">Details</button>
-          </div>
-          <div className="widget-content">
-            <ResponsiveContainer width="100%" height={250}>
-              <LineChart data={healthTrendData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-                <XAxis dataKey="date" stroke="#666" />
-                <YAxis stroke="#666" />
-                <Tooltip
-                  contentStyle={{ backgroundColor: '#fff', border: '1px solid #ddd', borderRadius: '8px' }}
-                />
-                <Legend />
-                <Line type="monotone" dataKey="blutdruck" stroke="#2196F3" strokeWidth={2} name="Blutdruck (sys)" />
-                <Line type="monotone" dataKey="puls" stroke="#4CAF50" strokeWidth={2} name="Puls" />
-              </LineChart>
-            </ResponsiveContainer>
           </div>
         </div>
 
@@ -201,31 +165,6 @@ function Home() {
                   <div className="med-info">
                     <div className="med-name">{med.name}</div>
                     <div className="med-dosage">{med.dosage} - {med.frequency}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Health Goals Progress (wenn vorhanden) */}
-        {currentUser.healthGoals && currentUser.healthGoals.length > 0 && (
-          <div className="dashboard-widget goals-widget">
-            <div className="widget-header">
-              <h2>🎯 Gesundheitsziele</h2>
-            </div>
-            <div className="widget-content">
-              {currentUser.healthGoals.map((goal, index) => (
-                <div key={index} className="goal-item">
-                  <div className="goal-info">
-                    <span className="goal-name">{goal.goal}</span>
-                    <span className="goal-percentage">{goal.progress}%</span>
-                  </div>
-                  <div className="goal-progress-bar">
-                    <div
-                      className="goal-progress-fill"
-                      style={{ width: `${goal.progress}%` }}
-                    ></div>
                   </div>
                 </div>
               ))}

@@ -5,7 +5,7 @@ import SecondaryNav from './components/SecondaryNav';
 import Home from './pages/Home';
 import Faelle from './pages/Faelle';
 import Dokumente from './pages/Dokumente';
-import Visualisierungen from './pages/Visualisierungen';
+import Labor from './pages/Labor';
 import Freigaben from './pages/Freigaben';
 import Profile from './pages/Profile';
 import Einstellungen from './pages/Einstellungen';
@@ -23,7 +23,7 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/faelle" element={<Faelle />} />
               <Route path="/dokumente" element={<Dokumente />} />
-              <Route path="/visualisierungen" element={<Visualisierungen />} />
+              <Route path="/labor" element={<Labor />} />
               <Route path="/freigaben" element={<Freigaben />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/einstellungen" element={<Einstellungen />} />

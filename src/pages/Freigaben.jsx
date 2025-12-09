@@ -1,63 +1,17 @@
 import './Pages.css';
 import './Freigaben.css';
 import { useState } from 'react';
+import { useUser } from '../context/UserContext';
 
 function Freigaben() {
+  const { currentUser } = useUser();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSpecialty, setSelectedSpecialty] = useState('alle');
   const [showAddAccess, setShowAddAccess] = useState(false);
 
-  // Simulierte Daten - später aus Dokumenten extrahiert
-  const [activeAccess, setActiveAccess] = useState([
-    {
-      id: 1,
-      name: 'Dr. med. Sarah Fischer',
-      specialty: 'Allgemeine Innere Medizin FMH',
-      institution: 'Hausarztpraxis Zürich',
-      phone: '+41 44 123 45 67',
-      isActive: true,
-      grantedDate: '2023-01-15',
-      expiryDate: null,
-      accessLevel: 'Vollzugriff',
-      cases: ['Alle Fälle'],
-      documentTypes: ['Laborberichte', 'Arztbriefe', 'Rezepte', 'Bildgebung']
-    },
-    {
-      id: 2,
-      name: 'Dr. med. Michael Keller',
-      specialty: 'Kardiologie FMH',
-      institution: 'Herzzentrum Zürich',
-      phone: '+41 44 234 56 78',
-      isActive: true,
-      grantedDate: '2024-06-10',
-      expiryDate: '2025-06-10',
-      accessLevel: 'Eingeschränkt',
-      cases: ['Herz-Kreislauf Behandlung'],
-      documentTypes: ['Herzecho', 'EKG', 'Laborberichte']
-    },
-    {
-      id: 3,
-      name: 'Prof. Dr. Anna Weber',
-      specialty: 'Diabetologie/Endokrinologie',
-      institution: 'Universitätsspital Zürich',
-      phone: '+41 44 255 11 11',
-      isActive: false,
-      grantedDate: '2023-03-20',
-      expiryDate: '2024-03-20',
-      accessLevel: 'Eingeschränkt',
-      cases: ['Diabetes Behandlung'],
-      documentTypes: ['Laborberichte', 'Arztbriefe']
-    }
-  ]);
-
-
-  // Behandelnde Ärzte aus Dokumenten erkannt
-  const doctorsFromDocuments = [
-    { name: 'Dr. med. Sarah Fischer', specialty: 'Allgemeinmedizin', hasAccess: true },
-    { name: 'Labor Zürich Nord', specialty: 'Labormedizin', hasAccess: false },
-    { name: 'Radiologie am Bahnhof', specialty: 'Radiologie', hasAccess: false },
-    { name: 'Apotheke Central', specialty: 'Pharmazie', hasAccess: false }
-  ];
+  // User-spezifische Daten
+  const [activeAccess, setActiveAccess] = useState(currentUser.accessGrants || []);
+  const doctorsFromDocuments = currentUser.doctorsFromDocuments || [];
 
   // Verfügbare Fachbereiche
   const specialties = [

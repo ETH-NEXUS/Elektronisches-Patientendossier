@@ -299,6 +299,13 @@
   font-weight: 600;
 }
 
+.appointment-source {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: #95a5a6;
+  font-style: italic;
+}
+
 /* ===== HEALTH VALUES WIDGET ===== */
 .health-value-item {
   display: flex;
