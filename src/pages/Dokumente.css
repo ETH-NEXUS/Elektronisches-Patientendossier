@@ -40,6 +40,49 @@
   background-color: #e55c00;
 }
 
+/* View Toggle */
+.view-toggle {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  background-color: #f8f9fa;
+  padding: 0.5rem;
+  border-radius: 8px;
+  width: fit-content;
+}
+
+.toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background-color: white;
+  color: #5a6c7d;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.toggle-btn:hover {
+  background-color: #e3f2fd;
+  border-color: #2196F3;
+  color: #2196F3;
+}
+
+.toggle-btn.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-color: #667eea;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.toggle-btn svg {
+  font-size: 1rem;
+}
+
 .documents-simple-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -424,6 +467,167 @@
   font-weight: 500;
 }
 
+/* ===== TIMELINE VIEW ===== */
+.timeline-container {
+  padding: 2rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.timeline-info {
+  margin-bottom: 2rem;
+}
+
+.timeline-info h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.timeline-description {
+  margin: 0 0 1.5rem 0;
+  color: #666;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.timeline-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.legend-box {
+  width: 20px;
+  height: 20px;
+  border-radius: 3px;
+  border: 1px solid #ddd;
+}
+
+.legend-box.past {
+  background-color: #e0e0e0;
+}
+
+.legend-box.current {
+  background-color: #ff6600;
+  border-color: #ff6600;
+}
+
+.legend-box.future {
+  background-color: white;
+}
+
+.legend-box.has-documents {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+}
+
+.week-grid {
+  display: grid;
+  grid-template-columns: repeat(52, 1fr);
+  gap: 2px;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  overflow-x: auto;
+  position: relative;
+}
+
+.week-box {
+  aspect-ratio: 1;
+  min-width: 8px;
+  min-height: 8px;
+  border-radius: 2px;
+  cursor: default;
+  transition: all 0.2s;
+  position: relative;
+  border: 1px solid transparent;
+}
+
+.week-box.past {
+  background-color: #e0e0e0;
+}
+
+.week-box.future {
+  background-color: white;
+  border-color: #ddd;
+}
+
+.week-box.current {
+  background-color: #ff6600;
+  box-shadow: 0 0 8px rgba(255, 102, 0, 0.6);
+  border-color: #ff6600;
+}
+
+.week-box.has-documents {
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: none;
+}
+
+.week-box.has-documents:hover {
+  transform: scale(1.3);
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.doc-count {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background-color: #e74c3c;
+  color: white;
+  font-size: 8px;
+  font-weight: bold;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid white;
+  z-index: 2;
+}
+
+.year-markers {
+  display: flex;
+  margin-top: 0.5rem;
+  padding-left: 1rem;
+  gap: calc((100% - 2rem) / 80);
+  position: relative;
+}
+
+.year-marker {
+  font-size: 0.75rem;
+  color: #999;
+  font-weight: 600;
+  width: 0;
+  text-align: left;
+}
+
+.year-marker:nth-child(5n) {
+  color: #666;
+  font-weight: 700;
+}
+
+.year-marker:first-child,
+.year-marker:nth-child(10n) {
+  color: #333;
+  font-weight: 800;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .modal-content {
@@ -438,5 +642,46 @@
   .document-menu-dropdown {
     right: auto;
     left: 0;
+  }
+
+  .timeline-container {
+    padding: 1rem;
+  }
+
+  .timeline-legend {
+    gap: 1rem;
+  }
+
+  .legend-item {
+    font-size: 0.8rem;
+  }
+
+  .week-grid {
+    gap: 1px;
+    padding: 0.5rem;
+  }
+
+  .week-box {
+    min-width: 6px;
+    min-height: 6px;
+  }
+
+  .doc-count {
+    font-size: 6px;
+    width: 12px;
+    height: 12px;
+  }
+
+  .year-marker {
+    font-size: 0.65rem;
+  }
+
+  .view-toggle {
+    width: 100%;
+  }
+
+  .toggle-btn {
+    flex: 1;
+    justify-content: center;
   }
 }

@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
-import { FaFileAlt, FaSyringe, FaXRay, FaFileMedical, FaPills, FaHeartbeat, FaTint, FaStethoscope, FaTimes, FaEllipsisV, FaEye, FaEdit, FaTrash } from 'react-icons/fa';
+import { FaFileAlt, FaSyringe, FaXRay, FaFileMedical, FaPills, FaHeartbeat, FaTint, FaStethoscope, FaTimes, FaEllipsisV, FaEye, FaEdit, FaTrash, FaList, FaCalendarAlt } from 'react-icons/fa';
 import { sampleDocuments, detectDocumentCategory, getDefaultDate } from '../data/sampleDocuments';
 import './Dokumente.css';
 
@@ -44,6 +44,9 @@ function Dokumente() {
   const { currentUser, addDocument, updateDocument, deleteDocument } = useUser();
   const [searchParams] = useSearchParams();
   const kategorie = searchParams.get('kategorie');
+
+  // View Mode State
+  const [viewMode, setViewMode] = useState('list'); // 'list' or 'timeline'
 
   // Modal State (Hinzufügen)
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -213,6 +216,60 @@ function Dokumente() {
     setEditCategory('');
   };
 
+  // Timeline Funktionen
+  const calculateWeeksSinceBirth = (birthDate) => {
+    const [day, month, year] = birthDate.split('.').map(Number);
+    const birth = new Date(year, month - 1, day);
+    const today = new Date();
+    const diffTime = Math.abs(today - birth);
+    const diffWeeks = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 7));
+    return diffWeeks;
+  };
+
+  const getWeekFromDate = (dateString, birthDate) => {
+    const [day, month, year] = birthDate.split('.').map(Number);
+    const birth = new Date(year, month - 1, day);
+
+    const [docYear, docMonth, docDay] = dateString.split('-').map(Number);
+    const docDate = new Date(docYear, docMonth - 1, docDay);
+
+    const diffTime = docDate - birth;
+    const weekNumber = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 7));
+    return weekNumber;
+  };
+
+  const timelineData = useMemo(() => {
+    if (!currentUser.birthDate) return { weeks: [], documentsByWeek: {} };
+
+    const totalWeeks = calculateWeeksSinceBirth(currentUser.birthDate);
+    const expectedLifeWeeks = 80 * 52; // 80 Jahre * 52 Wochen
+
+    // Erstelle Wochengrid
+    const weeks = [];
+    for (let i = 0; i <= Math.max(totalWeeks, expectedLifeWeeks); i++) {
+      weeks.push({
+        weekNumber: i,
+        year: Math.floor(i / 52),
+        isPast: i <= totalWeeks,
+        isCurrent: i === totalWeeks
+      });
+    }
+
+    // Mappe Dokumente auf Wochen
+    const documentsByWeek = {};
+    filteredDocuments.forEach(doc => {
+      const weekNumber = getWeekFromDate(doc.date, currentUser.birthDate);
+      if (weekNumber >= 0 && weekNumber <= expectedLifeWeeks) {
+        if (!documentsByWeek[weekNumber]) {
+          documentsByWeek[weekNumber] = [];
+        }
+        documentsByWeek[weekNumber].push(doc);
+      }
+    });
+
+    return { weeks, documentsByWeek, totalWeeks, expectedLifeWeeks };
+  }, [currentUser.birthDate, filteredDocuments]);
+
   return (
     <div className="dokumente-container">
       <div className="dokumente-header">
@@ -226,6 +283,22 @@ function Dokumente() {
           </p>
         </div>
         <button className="add-document-btn" onClick={openModal}>+ Dokument hinzufügen</button>
+      </div>
+
+      {/* View Mode Toggle */}
+      <div className="view-toggle">
+        <button
+          className={`toggle-btn ${viewMode === 'list' ? 'active' : ''}`}
+          onClick={() => setViewMode('list')}
+        >
+          <FaList /> Liste
+        </button>
+        <button
+          className={`toggle-btn ${viewMode === 'timeline' ? 'active' : ''}`}
+          onClick={() => setViewMode('timeline')}
+        >
+          <FaCalendarAlt /> Timeline
+        </button>
       </div>
 
       {/* Modal für Dokument hinzufügen */}
@@ -300,51 +373,114 @@ function Dokumente() {
         </div>
       )}
 
-      {filteredDocuments.length === 0 ? (
-        <div className="no-documents">
-          <p>Keine Dokumente in dieser Kategorie gefunden.</p>
-        </div>
-      ) : (
-        <div className="documents-simple-grid">
-          {filteredDocuments.map(doc => (
-            <div key={doc.id} className={`document-simple-card ${openMenuId === doc.id ? 'menu-open' : ''}`}>
-              <div
-                className="document-simple-thumbnail"
-                style={{ backgroundColor: getThumbnailColor(doc.category) }}
-              >
-                {getThumbnailIcon(doc.thumbnail)}
-              </div>
-              <div className="document-simple-info">
-                <h3>{doc.title}</h3>
-                <p className="document-simple-category">{doc.category}</p>
-                {doc.date && <p className="document-simple-date">{new Date(doc.date).toLocaleDateString('de-DE')}</p>}
-              </div>
-
-              {/* 3-Punkte-Menü */}
-              <div className="document-menu-container">
-                <button
-                  className="document-menu-btn"
-                  onClick={() => toggleMenu(doc.id)}
+      {viewMode === 'list' ? (
+        // Listen-Ansicht
+        filteredDocuments.length === 0 ? (
+          <div className="no-documents">
+            <p>Keine Dokumente in dieser Kategorie gefunden.</p>
+          </div>
+        ) : (
+          <div className="documents-simple-grid">
+            {filteredDocuments.map(doc => (
+              <div key={doc.id} className={`document-simple-card ${openMenuId === doc.id ? 'menu-open' : ''}`}>
+                <div
+                  className="document-simple-thumbnail"
+                  style={{ backgroundColor: getThumbnailColor(doc.category) }}
                 >
-                  <FaEllipsisV />
-                </button>
+                  {getThumbnailIcon(doc.thumbnail)}
+                </div>
+                <div className="document-simple-info">
+                  <h3>{doc.title}</h3>
+                  <p className="document-simple-category">{doc.category}</p>
+                  {doc.date && <p className="document-simple-date">{new Date(doc.date).toLocaleDateString('de-DE')}</p>}
+                </div>
 
-                {openMenuId === doc.id && (
-                  <div className="document-menu-dropdown">
-                    <button onClick={() => handleView(doc)}>
-                      <FaEye /> Anschauen
-                    </button>
-                    <button onClick={() => handleEdit(doc)}>
-                      <FaEdit /> Bearbeiten
-                    </button>
-                    <button onClick={() => handleDelete(doc.id)} className="delete-btn">
-                      <FaTrash /> Löschen
-                    </button>
-                  </div>
-                )}
+                {/* 3-Punkte-Menü */}
+                <div className="document-menu-container">
+                  <button
+                    className="document-menu-btn"
+                    onClick={() => toggleMenu(doc.id)}
+                  >
+                    <FaEllipsisV />
+                  </button>
+
+                  {openMenuId === doc.id && (
+                    <div className="document-menu-dropdown">
+                      <button onClick={() => handleView(doc)}>
+                        <FaEye /> Anschauen
+                      </button>
+                      <button onClick={() => handleEdit(doc)}>
+                        <FaEdit /> Bearbeiten
+                      </button>
+                      <button onClick={() => handleDelete(doc.id)} className="delete-btn">
+                        <FaTrash /> Löschen
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )
+      ) : (
+        // Timeline-Ansicht (Week Grid)
+        <div className="timeline-container">
+          <div className="timeline-info">
+            <h3>Mein Leben in Wochen</h3>
+            <p className="timeline-description">
+              Jedes Quadrat repräsentiert eine Woche Ihres Lebens. Sie sind {currentUser.name &&  currentUser.name.split(' ')[0]},
+              {' '}{timelineData.totalWeeks && Math.floor(timelineData.totalWeeks / 52)} Jahre alt
+              ({timelineData.totalWeeks} Wochen gelebt).
+            </p>
+            <div className="timeline-legend">
+              <div className="legend-item">
+                <span className="legend-box past"></span>
+                <span>Vergangene Wochen</span>
+              </div>
+              <div className="legend-item">
+                <span className="legend-box current"></span>
+                <span>Aktuelle Woche</span>
+              </div>
+              <div className="legend-item">
+                <span className="legend-box future"></span>
+                <span>Zukünftige Wochen</span>
+              </div>
+              <div className="legend-item">
+                <span className="legend-box document"></span>
+                <span>Woche mit Dokumenten</span>
               </div>
             </div>
-          ))}
+          </div>
+
+          <div className="week-grid">
+            {timelineData.weeks.map((week) => {
+              const hasDocuments = timelineData.documentsByWeek[week.weekNumber];
+              const docCount = hasDocuments ? hasDocuments.length : 0;
+
+              return (
+                <div
+                  key={week.weekNumber}
+                  className={`week-box ${week.isPast ? 'past' : 'future'} ${week.isCurrent ? 'current' : ''} ${hasDocuments ? 'has-documents' : ''}`}
+                  title={hasDocuments ? `Woche ${week.weekNumber} (Jahr ${week.year}): ${docCount} Dokument${docCount > 1 ? 'e' : ''}` : `Woche ${week.weekNumber} (Jahr ${week.year})`}
+                  onClick={() => hasDocuments && setViewDocument(hasDocuments[0])}
+                  style={{
+                    backgroundColor: hasDocuments ? getThumbnailColor(hasDocuments[0].category) : undefined
+                  }}
+                >
+                  {docCount > 1 && <span className="doc-count">{docCount}</span>}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Jahresmarkierungen */}
+          <div className="year-markers">
+            {Array.from({ length: Math.ceil(timelineData.expectedLifeWeeks / 52) }, (_, i) => i).map((year) => (
+              <div key={year} className="year-marker" style={{ left: `${(year * 52 / timelineData.expectedLifeWeeks) * 100}%` }}>
+                {year}
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
