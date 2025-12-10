@@ -473,13 +473,21 @@ function Dokumente() {
             })}
           </div>
 
-          {/* Jahresmarkierungen */}
+          {/* Jahresmarkierungen - nur wichtige Meilensteine */}
           <div className="year-markers">
-            {Array.from({ length: Math.ceil(timelineData.expectedLifeWeeks / 52) }, (_, i) => i).map((year) => (
-              <div key={year} className="year-marker" style={{ left: `${(year * 52 / timelineData.expectedLifeWeeks) * 100}%` }}>
-                {year}
-              </div>
-            ))}
+            {Array.from({ length: Math.ceil(timelineData.expectedLifeWeeks / 52) + 1 }, (_, i) => i).filter(year => year % 10 === 0 || year === Math.floor(timelineData.totalWeeks / 52)).map((year) => {
+              const isCurrent = year === Math.floor(timelineData.totalWeeks / 52);
+              return (
+                <div
+                  key={year}
+                  className={`year-marker ${isCurrent ? 'current-year' : ''}`}
+                  style={{ left: `${(year * 52 / timelineData.expectedLifeWeeks) * 100}%` }}
+                >
+                  <div className="year-label">{year}J</div>
+                  {isCurrent && <div className="year-indicator">▼ Jetzt</div>}
+                </div>
+              );
+            })}
           </div>
         </div>
       )}

@@ -389,53 +389,144 @@ function Faelle() {
       )}
 
       {/* View Case Modal */}
-      {viewCase && (
-        <div className="modal-overlay" onClick={() => setViewCase(null)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2>Fall-Details</h2>
-              <button className="modal-close-btn" onClick={() => setViewCase(null)}>×</button>
-            </div>
+      {viewCase && (() => {
+        // Finde verknüpfte Dokumente basierend auf Kategorie und Zeitraum
+        const caseStartDate = new Date(viewCase.startDate);
+        const caseEndDate = viewCase.endDate ? new Date(viewCase.endDate) : new Date();
 
-            <div className="modal-body">
-              <div className="view-document-details">
-                <div className="view-item">
-                  <span className="view-label">Titel</span>
-                  <span className="view-value">{viewCase.title}</span>
+        const relatedDocuments = currentUser.documents.filter(doc => {
+          const docDate = new Date(doc.date);
+          const isInTimeRange = docDate >= caseStartDate && docDate <= caseEndDate;
+
+          // Prüfe ob Kategorie relevant ist
+          const categoryMatch =
+            doc.category === viewCase.category ||
+            (viewCase.category === 'Orthopädie' && ['Bildgebung', 'Diagnosen'].includes(doc.category)) ||
+            (viewCase.category === 'Kardiologie' && ['Bildgebung', 'Labor'].includes(doc.category)) ||
+            (viewCase.category === 'Gynäkologie' && ['Bildgebung', 'Labor', 'Vorsorge'].includes(doc.category)) ||
+            (viewCase.category === 'Diabetologie' && doc.category === 'Labor') ||
+            (viewCase.category === 'Rheumatologie' && ['Bildgebung', 'Labor'].includes(doc.category));
+
+          return isInTimeRange && categoryMatch;
+        }).sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        return (
+          <div className="modal-overlay" onClick={() => setViewCase(null)}>
+            <div className="modal-content modal-large" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <h2>Fall-Details: {viewCase.title}</h2>
+                <button className="modal-close-btn" onClick={() => setViewCase(null)}>×</button>
+              </div>
+
+              <div className="modal-body">
+                {/* Fall-Informationen */}
+                <div className="case-details-section">
+                  <h3>Fallinformationen</h3>
+                  <div className="view-document-details">
+                    <div className="view-item">
+                      <span className="view-label">Kategorie</span>
+                      <span className="view-value">{viewCase.category}</span>
+                    </div>
+                    <div className="view-item">
+                      <span className="view-label">Status</span>
+                      <span className="view-value" style={{
+                        color: getStatusColor(viewCase.status),
+                        fontWeight: 'bold'
+                      }}>{getStatusLabel(viewCase.status)}</span>
+                    </div>
+                    <div className="view-item">
+                      <span className="view-label">Behandelnder Arzt</span>
+                      <span className="view-value">{viewCase.doctor}</span>
+                    </div>
+                    <div className="view-item">
+                      <span className="view-label">Zeitraum</span>
+                      <span className="view-value">
+                        {viewCase.startDate} {viewCase.endDate ? `bis ${viewCase.endDate}` : '(laufend)'}
+                      </span>
+                    </div>
+                  </div>
                 </div>
-                <div className="view-item">
-                  <span className="view-label">Kategorie</span>
-                  <span className="view-value">{viewCase.category}</span>
+
+                {/* Zusammenfassung */}
+                <div className="case-details-section">
+                  <h3>Zusammenfassung</h3>
+                  <div className="case-summary">
+                    <div className="summary-stats">
+                      <div className="summary-stat-item">
+                        <div className="stat-number">{relatedDocuments.length}</div>
+                        <div className="stat-label">Verknüpfte Dokumente</div>
+                      </div>
+                      <div className="summary-stat-item">
+                        <div className="stat-number">{relatedDocuments.filter(d => d.category === 'Labor').length}</div>
+                        <div className="stat-label">Laborberichte</div>
+                      </div>
+                      <div className="summary-stat-item">
+                        <div className="stat-number">{relatedDocuments.filter(d => d.category === 'Bildgebung').length}</div>
+                        <div className="stat-label">Bildgebung</div>
+                      </div>
+                      <div className="summary-stat-item">
+                        <div className="stat-number">{relatedDocuments.filter(d => d.category === 'Diagnosen').length}</div>
+                        <div className="stat-label">Diagnosen/Berichte</div>
+                      </div>
+                    </div>
+                    {relatedDocuments.length > 0 && (
+                      <div className="case-summary-text">
+                        <p>
+                          Dieser Fall umfasst <strong>{relatedDocuments.length} Dokument{relatedDocuments.length > 1 ? 'e' : ''}</strong> im Zeitraum vom <strong>{viewCase.startDate}</strong> bis <strong>{viewCase.endDate || 'heute'}</strong>.
+                          {relatedDocuments.length > 0 && ` Das neueste Dokument ist "${relatedDocuments[0].title}" vom ${new Date(relatedDocuments[0].date).toLocaleDateString('de-DE')}.`}
+                        </p>
+                      </div>
+                    )}
+                  </div>
                 </div>
-                <div className="view-item">
-                  <span className="view-label">Status</span>
-                  <span className="view-value">{getStatusLabel(viewCase.status)}</span>
-                </div>
-                <div className="view-item">
-                  <span className="view-label">Behandelnder Arzt</span>
-                  <span className="view-value">{viewCase.doctor}</span>
-                </div>
-                <div className="view-item">
-                  <span className="view-label">Start-Datum</span>
-                  <span className="view-value">{viewCase.startDate}</span>
-                </div>
-                {viewCase.endDate && (
-                  <div className="view-item">
-                    <span className="view-label">End-Datum</span>
-                    <span className="view-value">{viewCase.endDate}</span>
+
+                {/* Verknüpfte Dokumente */}
+                {relatedDocuments.length > 0 && (
+                  <div className="case-details-section">
+                    <h3>Verknüpfte Dokumente ({relatedDocuments.length})</h3>
+                    <div className="case-documents-list">
+                      {relatedDocuments.map(doc => (
+                        <div key={doc.id} className="case-document-item">
+                          <div className="case-doc-icon" style={{
+                            backgroundColor: doc.category === 'Labor' ? '#3498db' :
+                                           doc.category === 'Bildgebung' ? '#9b59b6' :
+                                           doc.category === 'Diagnosen' ? '#e67e22' :
+                                           doc.category === 'Vorsorge' ? '#27ae60' : '#95a5a6'
+                          }}>
+                            {doc.category.charAt(0)}
+                          </div>
+                          <div className="case-doc-info">
+                            <div className="case-doc-title">{doc.title}</div>
+                            <div className="case-doc-meta">
+                              <span className="case-doc-category">{doc.category}</span>
+                              <span className="case-doc-date">{new Date(doc.date).toLocaleDateString('de-DE')}</span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {relatedDocuments.length === 0 && (
+                  <div className="case-details-section">
+                    <div className="no-related-documents">
+                      <FaFileAlt className="no-docs-icon" />
+                      <p>Keine verknüpften Dokumente im Zeitraum dieses Falls gefunden.</p>
+                    </div>
                   </div>
                 )}
               </div>
-            </div>
 
-            <div className="modal-footer">
-              <button className="btn-cancel" onClick={() => setViewCase(null)}>
-                Schließen
-              </button>
+              <div className="modal-footer">
+                <button className="btn-cancel" onClick={() => setViewCase(null)}>
+                  Schließen
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* Pain Diary Modal */}
       {painDiaryCase && (
