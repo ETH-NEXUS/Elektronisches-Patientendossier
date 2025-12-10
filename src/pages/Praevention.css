@@ -1,0 +1,171 @@
+/* Prävention-Seite Styles */
+
+.prevention-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.prevention-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s;
+  border: 1px solid #e0e0e0;
+}
+
+.prevention-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.prevention-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.prevention-icon {
+  font-size: 2rem;
+  opacity: 0.9;
+}
+
+.prevention-status-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.prevention-status-badge svg {
+  font-size: 1rem;
+}
+
+.prevention-card-body h3 {
+  margin: 0 0 0.5rem 0;
+  color: #2c3e50;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.prevention-category {
+  display: inline-block;
+  background-color: #f8f9fa;
+  color: #5a6c7d;
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.prevention-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #f0f0f0;
+}
+
+.prevention-detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.detail-label {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.detail-value {
+  color: #2c3e50;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.prevention-description {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  color: #5a6c7d;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.no-prevention-data {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem 2rem;
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  border: 2px dashed #e0e0e0;
+}
+
+.no-data-icon {
+  font-size: 4rem;
+  color: #bdc3c7;
+  margin-bottom: 1rem;
+}
+
+.no-prevention-data p {
+  color: #95a5a6;
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .prevention-grid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.25rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .prevention-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .prevention-card {
+    padding: 1.25rem;
+  }
+
+  .prevention-card-body h3 {
+    font-size: 1.15rem;
+  }
+
+  .prevention-icon {
+    font-size: 1.75rem;
+  }
+
+  .prevention-status-badge {
+    padding: 0.4rem 0.85rem;
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .prevention-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .prevention-status-badge {
+    width: 100%;
+    justify-content: center;
+  }
+}

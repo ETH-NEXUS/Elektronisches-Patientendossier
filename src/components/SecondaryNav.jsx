@@ -62,6 +62,12 @@ function SecondaryNav() {
           Labor
         </NavLink>
         <NavLink
+          to="/praevention"
+          className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}
+        >
+          Prävention
+        </NavLink>
+        <NavLink
           to="/freigaben"
           className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}
         >

@@ -131,6 +131,16 @@ export const usersData = {
       ]
     },
 
+    // Prävention & Vorsorge
+    preventionData: [
+      { name: 'Tetanus-Impfung', category: 'Impfungen', status: 'aktuell', lastDate: '2024-08-10', nextDue: '2034-08-10', daysUntilDue: 3545, interval: 'Alle 10 Jahre' },
+      { name: 'FSME-Impfung', category: 'Impfungen', status: 'aktuell', lastDate: '2023-05-15', nextDue: '2026-05-15', daysUntilDue: 525, interval: 'Alle 3 Jahre' },
+      { name: 'COVID-19 Booster', category: 'Impfungen', status: 'aktuell', lastDate: '2024-01-20', nextDue: '2025-01-20', daysUntilDue: 44, interval: 'Jährlich' },
+      { name: 'Grippe-Impfung', category: 'Impfungen', status: 'empfohlen', lastDate: null, nextDue: '2025-10-01', daysUntilDue: 298, interval: 'Jährlich', description: 'Empfohlene Grippeimpfung für Herbst/Winter-Saison' },
+      { name: 'Gesundheits-Check-up', category: 'Vorsorge', status: 'aktuell', lastDate: '2024-11-20', nextDue: '2026-11-20', daysUntilDue: 734, interval: 'Alle 2 Jahre', description: 'Allgemeine Vorsorgeuntersuchung für unter 35-Jährige' },
+      { name: 'Hautkrebs-Screening', category: 'Screening', status: 'empfohlen', lastDate: null, nextDue: '2025-06-01', daysUntilDue: 175, interval: 'Alle 2 Jahre', description: 'Hautkrebsvorsorge besonders für sportlich Aktive empfohlen' }
+    ],
+
     // Freigaben
     accessGrants: [
       {
@@ -313,6 +323,18 @@ export const usersData = {
         { name: 'COVID-19', lastDate: '2024-02-10', nextDue: '2025-02-10', status: 'aktuell', daysUntilDue: 65 }
       ]
     },
+
+    // Prävention & Vorsorge - Schwangerschafts-fokussiert
+    preventionData: [
+      { name: 'Tetanus-Impfung', category: 'Impfungen', status: 'aktuell', lastDate: '2022-03-10', nextDue: '2032-03-10', daysUntilDue: 2646, interval: 'Alle 10 Jahre' },
+      { name: 'Pertussis-Impfung (Keuchhusten)', category: 'Impfungen', status: 'aktuell', lastDate: '2024-07-01', nextDue: '2034-07-01', daysUntilDue: 3498, interval: 'Alle 10 Jahre', description: 'Keuchhusten-Impfung während Schwangerschaft zum Schutz des Neugeborenen' },
+      { name: 'Grippe-Impfung', category: 'Impfungen', status: 'aktuell', lastDate: '2024-10-15', nextDue: '2025-10-15', daysUntilDue: 312, interval: 'Jährlich', description: 'Grippeimpfung während Schwangerschaft empfohlen' },
+      { name: 'COVID-19 Booster', category: 'Impfungen', status: 'aktuell', lastDate: '2024-02-10', nextDue: '2025-02-10', daysUntilDue: 65, interval: 'Jährlich' },
+      { name: 'Schwangerschaftskontrolle', category: 'Vorsorge', status: 'bald_fällig', lastDate: '2024-11-25', nextDue: '2024-12-02', daysUntilDue: -3, interval: 'Alle 2 Wochen', description: 'Regelmäßige Schwangerschaftsvorsorge im 3. Trimester' },
+      { name: 'Ultraschalluntersuchung', category: 'Vorsorge', status: 'bald_fällig', lastDate: '2024-11-25', nextDue: '2024-12-16', daysUntilDue: 11, interval: '2-4 Wochen', description: 'Regelmäßige Ultraschall-Kontrolle der Kindesentwicklung' },
+      { name: 'Glucose-Toleranztest (Schwangerschaftsdiabetes)', category: 'Screening', status: 'aktuell', lastDate: '2024-11-10', nextDue: null, daysUntilDue: null, interval: 'Einmalig', description: 'Test auf Schwangerschaftsdiabetes - Ergebnis negativ' },
+      { name: 'Toxoplasmose-Screening', category: 'Screening', status: 'aktuell', lastDate: '2024-06-10', nextDue: null, daysUntilDue: null, interval: 'Einmalig', description: 'Toxoplasmose-Antikörper-Test negativ' }
+    ],
 
     // Freigaben
     accessGrants: [
@@ -521,6 +543,20 @@ export const usersData = {
         { name: 'Gürtelrose (Herpes Zoster)', lastDate: null, nextDue: '2025-06-01', status: 'empfohlen', daysUntilDue: 176 }
       ]
     },
+
+    // Prävention & Vorsorge - Kardiovaskulär-fokussiert
+    preventionData: [
+      { name: 'Grippe-Impfung', category: 'Impfungen', status: 'aktuell', lastDate: '2024-10-12', nextDue: '2025-10-12', daysUntilDue: 309, interval: 'Jährlich', description: 'Jährliche Grippeimpfung bei kardiovaskulären Erkrankungen empfohlen' },
+      { name: 'COVID-19 Booster', category: 'Impfungen', status: 'aktuell', lastDate: '2024-03-20', nextDue: '2025-03-20', daysUntilDue: 103, interval: 'Jährlich' },
+      { name: 'Tetanus-Impfung', category: 'Impfungen', status: 'aktuell', lastDate: '2022-05-15', nextDue: '2032-05-15', daysUntilDue: 2696, interval: 'Alle 10 Jahre' },
+      { name: 'Pneumokokken-Impfung', category: 'Impfungen', status: 'aktuell', lastDate: '2024-04-10', nextDue: '2030-04-10', daysUntilDue: 1950, interval: 'Alle 6 Jahre', description: 'Pneumokokken-Impfung zur Prävention von Lungenentzündungen' },
+      { name: 'Gürtelrose-Impfung (Herpes Zoster)', category: 'Impfungen', status: 'empfohlen', lastDate: null, nextDue: '2025-06-01', daysUntilDue: 176, interval: 'Einmalig', description: 'Empfohlen für Personen ab 50 Jahren zur Prävention von Gürtelrose' },
+      { name: 'Kardio-Check-up', category: 'Vorsorge', status: 'aktuell', lastDate: '2024-11-15', nextDue: '2025-05-15', daysUntilDue: 160, interval: 'Alle 6 Monate', description: 'Kardiologische Kontrolluntersuchung inkl. EKG und Echokardiographie' },
+      { name: 'Cholesterin-Kontrolle', category: 'Check-up', status: 'bald_fällig', lastDate: '2024-10-20', nextDue: '2025-01-20', daysUntilDue: 45, interval: 'Alle 3 Monate', description: 'Regelmäßige Cholesterinkontrolle bei Statin-Therapie' },
+      { name: 'Blutdruck 24h-Messung', category: 'Screening', status: 'aktuell', lastDate: '2024-09-10', nextDue: '2025-09-10', daysUntilDue: 278, interval: 'Jährlich', description: 'Langzeit-Blutdruckmessung zur Therapiekontrolle' },
+      { name: 'Darmkrebs-Screening (Koloskopie)', category: 'Screening', status: 'überfällig', lastDate: '2020-03-15', nextDue: '2024-03-15', daysUntilDue: -265, interval: 'Alle 10 Jahre', description: 'Darmspiegelung zur Krebsvorsorge ab 50 Jahren' },
+      { name: 'Hautkrebs-Screening', category: 'Screening', status: 'empfohlen', lastDate: null, nextDue: '2025-06-01', daysUntilDue: 175, interval: 'Alle 2 Jahre', description: 'Dermatologische Vorsorgeuntersuchung' }
+    ],
 
     // Freigaben
     accessGrants: [
@@ -839,6 +875,25 @@ export const usersData = {
         { name: 'FSME', lastDate: '2018-05-10', nextDue: '2021-05-10', status: 'überfällig', daysUntilDue: -1306 }
       ]
     },
+
+    // Prävention & Vorsorge - Geriatrisch umfangreich
+    preventionData: [
+      { name: 'Grippe-Impfung', category: 'Impfungen', status: 'aktuell', lastDate: '2024-10-01', nextDue: '2025-10-01', daysUntilDue: 298, interval: 'Jährlich', description: 'Jährliche Grippeimpfung bei Senioren dringend empfohlen' },
+      { name: 'Pneumokokken-Impfung', category: 'Impfungen', status: 'aktuell', lastDate: '2023-09-15', nextDue: '2029-09-15', daysUntilDue: 1744, interval: 'Alle 6 Jahre', description: 'Schutz vor Lungenentzündungen besonders wichtig bei Herzinsuffizienz' },
+      { name: 'COVID-19 Booster', category: 'Impfungen', status: 'aktuell', lastDate: '2024-04-10', nextDue: '2025-04-10', daysUntilDue: 124, interval: 'Jährlich' },
+      { name: 'Tetanus/Diphtherie', category: 'Impfungen', status: 'aktuell', lastDate: '2020-06-20', nextDue: '2030-06-20', daysUntilDue: 2020, interval: 'Alle 10 Jahre' },
+      { name: 'Gürtelrose-Impfung (Herpes Zoster)', category: 'Impfungen', status: 'bald_fällig', lastDate: null, nextDue: '2024-12-31', daysUntilDue: 24, interval: 'Einmalig ab 60', description: 'Wichtige Impfung zur Prävention von Gürtelrose und Post-Zoster-Neuralgie' },
+      { name: 'FSME-Auffrischung', category: 'Impfungen', status: 'überfällig', lastDate: '2018-05-10', nextDue: '2021-05-10', daysUntilDue: -1306, interval: 'Alle 3 Jahre', description: 'FSME-Auffrischimpfung überfällig' },
+      { name: 'Geriatrie-Kontrolluntersuchung', category: 'Vorsorge', status: 'bald_fällig', lastDate: '2024-11-20', nextDue: '2024-12-20', daysUntilDue: 15, interval: 'Monatlich', description: 'Geriatrische Betreuung mit Vitalzeichen und Medikamentencheck' },
+      { name: 'Diabetes-Kontrolle (HbA1c)', category: 'Check-up', status: 'bald_fällig', lastDate: '2024-11-18', nextDue: '2025-02-18', daysUntilDue: 73, interval: 'Alle 3 Monate', description: 'Regelmäßige Diabeteskontrolle zur Therapieanpassung' },
+      { name: 'Nierenfunktion (eGFR)', category: 'Check-up', status: 'bald_fällig', lastDate: '2024-11-18', nextDue: '2025-02-18', daysUntilDue: 73, interval: 'Alle 3 Monate', description: 'Engmaschige Kontrolle bei eingeschränkter Nierenfunktion' },
+      { name: 'Knochendichte-Messung (DXA)', category: 'Screening', status: 'aktuell', lastDate: '2024-09-10', nextDue: '2026-09-10', daysUntilDue: 643, interval: 'Alle 2 Jahre', description: 'Osteoporose-Screening zur Fraktur-Prävention' },
+      { name: 'Augenhintergrund-Untersuchung', category: 'Screening', status: 'empfohlen', lastDate: '2024-06-20', nextDue: '2025-06-20', daysUntilDue: 195, interval: 'Jährlich', description: 'Augenärztliche Kontrolle bei Diabetes zur Früherkennung diabetischer Retinopathie' },
+      { name: 'Sturzrisikoanalyse', category: 'Vorsorge', status: 'aktuell', lastDate: '2024-07-30', nextDue: '2025-07-30', daysUntilDue: 235, interval: 'Jährlich', description: 'Geriatrische Sturzpräventionsanalyse mit Physiotherapie-Empfehlungen' },
+      { name: 'Herzecho (Echokardiographie)', category: 'Check-up', status: 'aktuell', lastDate: '2024-10-22', nextDue: '2025-04-22', daysUntilDue: 136, interval: 'Alle 6 Monate', description: 'Kontrolle der Herzinsuffizienz mittels Ultraschall' },
+      { name: 'EKG-Kontrolle', category: 'Check-up', status: 'aktuell', lastDate: '2024-11-20', nextDue: '2025-05-20', daysUntilDue: 164, interval: 'Alle 6 Monate', description: 'Routinemäßiges EKG bei Herzinsuffizienz' },
+      { name: 'Demenz-Screening (Mini-Mental)', category: 'Screening', status: 'aktuell', lastDate: '2024-08-15', nextDue: '2025-02-15', daysUntilDue: 70, interval: 'Alle 6 Monate', description: 'Verlaufskontrolle der kognitiven Fähigkeiten bei milder Demenz' }
+    ],
 
     // Freigaben - Umfangreiches Behandlungsteam
     accessGrants: [

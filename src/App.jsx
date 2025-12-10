@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import Faelle from './pages/Faelle';
 import Dokumente from './pages/Dokumente';
 import Labor from './pages/Labor';
+import Praevention from './pages/Praevention';
 import Freigaben from './pages/Freigaben';
 import Profile from './pages/Profile';
 import Einstellungen from './pages/Einstellungen';
@@ -24,6 +25,7 @@ function App() {
               <Route path="/faelle" element={<Faelle />} />
               <Route path="/dokumente" element={<Dokumente />} />
               <Route path="/labor" element={<Labor />} />
+              <Route path="/praevention" element={<Praevention />} />
               <Route path="/freigaben" element={<Freigaben />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/einstellungen" element={<Einstellungen />} />
