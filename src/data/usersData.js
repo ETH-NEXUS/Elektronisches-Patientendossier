@@ -73,8 +73,33 @@ export const usersData = {
     ],
 
     cases: [
-      { id: 'lfc1', title: "Meniskusverletzung links", status: "laufend", startDate: "2024-09-01", category: "Orthopädie", doctor: "Dr. med. Andreas Keller" },
-      { id: 'lfc2', title: "Routine Gesundheitscheck", status: "abgeschlossen", startDate: "2024-10-15", endDate: "2024-11-20", category: "Vorsorge", doctor: "Dr. med. Andreas Keller" }
+      {
+        id: 'lfc1',
+        title: "Meniskusverletzung links",
+        status: "laufend",
+        startDate: "2024-09-01",
+        category: "Orthopädie",
+        doctor: "Dr. med. Andreas Keller",
+        painDiary: [
+          { date: "2024-11-25", time: "08:00", painLevel: 3, location: "Knie links", notes: "Leichte Schmerzen nach dem Aufstehen" },
+          { date: "2024-11-24", time: "14:30", painLevel: 5, location: "Knie links", notes: "Nach Physiotherapie, Schwellung" },
+          { date: "2024-11-23", time: "09:15", painLevel: 2, location: "Knie links", notes: "Morgens kaum Schmerzen" },
+          { date: "2024-11-22", time: "18:00", painLevel: 6, location: "Knie links", notes: "Nach längerem Stehen im Training" },
+          { date: "2024-11-21", time: "12:00", painLevel: 4, location: "Knie links", notes: "Mittelmässig, leichte Belastung" },
+          { date: "2024-11-20", time: "07:30", painLevel: 3, location: "Knie links", notes: "Morgensteifigkeit" },
+          { date: "2024-11-19", time: "16:00", painLevel: 5, location: "Knie links", notes: "Nach Treppensteigen verschlimmert" },
+          { date: "2024-11-18", time: "10:00", painLevel: 2, location: "Knie links", notes: "Ruhetag, kaum Beschwerden" }
+        ]
+      },
+      {
+        id: 'lfc2',
+        title: "Routine Gesundheitscheck",
+        status: "abgeschlossen",
+        startDate: "2024-10-15",
+        endDate: "2024-11-20",
+        category: "Vorsorge",
+        doctor: "Dr. med. Andreas Keller"
+      }
     ],
 
     // Visualisierungen - Gesunde junge Person
@@ -642,12 +667,66 @@ export const usersData = {
     ],
 
     cases: [
-      { id: 'emc1', title: "Diabetes mellitus Typ 2", status: "laufend", startDate: "2010-04-15", category: "Diabetologie", doctor: "Dr. med. Julia Zimmermann" },
-      { id: 'emc2', title: "Chronische Herzinsuffizienz", status: "laufend", startDate: "2015-08-20", category: "Kardiologie", doctor: "Dr. med. Julia Zimmermann" },
-      { id: 'emc3', title: "Arterielle Hypertonie", status: "laufend", startDate: "2008-02-10", category: "Kardiologie", doctor: "Dr. med. Julia Zimmermann" },
-      { id: 'emc4', title: "Osteoporose", status: "laufend", startDate: "2012-11-05", category: "Rheumatologie", doctor: "Dr. med. Julia Zimmermann" },
-      { id: 'emc5', title: "Milde Demenz", status: "laufend", startDate: "2022-06-15", category: "Neurologie", doctor: "Dr. med. Julia Zimmermann" },
-      { id: 'emc6', title: "Sturzprävention & Physiotherapie", status: "laufend", startDate: "2023-01-10", category: "Geriatrie", doctor: "Therapeut Müller" }
+      {
+        id: 'emc1',
+        title: "Diabetes mellitus Typ 2",
+        status: "laufend",
+        startDate: "2010-04-15",
+        category: "Diabetologie",
+        doctor: "Dr. med. Julia Zimmermann"
+      },
+      {
+        id: 'emc2',
+        title: "Chronische Herzinsuffizienz",
+        status: "laufend",
+        startDate: "2015-08-20",
+        category: "Kardiologie",
+        doctor: "Dr. med. Julia Zimmermann"
+      },
+      {
+        id: 'emc3',
+        title: "Arterielle Hypertonie",
+        status: "laufend",
+        startDate: "2008-02-10",
+        category: "Kardiologie",
+        doctor: "Dr. med. Julia Zimmermann"
+      },
+      {
+        id: 'emc4',
+        title: "Osteoporose",
+        status: "laufend",
+        startDate: "2012-11-05",
+        category: "Rheumatologie",
+        doctor: "Dr. med. Julia Zimmermann",
+        painDiary: [
+          { date: "2024-11-25", time: "09:00", painLevel: 5, location: "Unterer Rücken", notes: "Chronische Rückenschmerzen, morgens verstärkt" },
+          { date: "2024-11-24", time: "14:00", painLevel: 4, location: "Unterer Rücken", notes: "Nach leichter Bewegung besser" },
+          { date: "2024-11-23", time: "10:30", painLevel: 6, location: "Unterer Rücken, rechte Hüfte", notes: "Wetterumschwung, Schmerzen verschlimmert" },
+          { date: "2024-11-22", time: "08:00", painLevel: 5, location: "Unterer Rücken", notes: "Morgensteifigkeit" },
+          { date: "2024-11-21", time: "16:00", painLevel: 3, location: "Unterer Rücken", notes: "Nach Physiotherapie Linderung" },
+          { date: "2024-11-20", time: "11:00", painLevel: 5, location: "Unterer Rücken", notes: "Konstante Schmerzen" },
+          { date: "2024-11-19", time: "09:30", painLevel: 6, location: "Unterer Rücken, beide Hüften", notes: "Schlechte Nacht, kaum geschlafen" },
+          { date: "2024-11-18", time: "12:00", painLevel: 4, location: "Unterer Rücken", notes: "Erträglich mit Schmerzmitteln" },
+          { date: "2024-11-17", time: "08:00", painLevel: 5, location: "Unterer Rücken", notes: "Wie üblich morgens steif" },
+          { date: "2024-11-16", time: "15:00", painLevel: 4, location: "Unterer Rücken", notes: "Nach Ruhe etwas besser" }
+        ]
+      },
+      {
+        id: 'emc5',
+        title: "Milde Demenz",
+        status: "laufend",
+        startDate: "2022-06-15",
+        category: "Neurologie",
+        doctor: "Dr. med. Julia Zimmermann"
+      },
+      {
+        id: 'emc6',
+        title: "Sturzprävention & Physiotherapie",
+        status: "laufend",
+        startDate: "2023-01-10",
+        category: "Geriatrie",
+        doctor: "Therapeut Müller"
+      }
     ],
 
     // Visualisierungen - Komplexe Multimorbidität
