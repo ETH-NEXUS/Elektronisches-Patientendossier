@@ -4,7 +4,7 @@ import { FaPlus, FaFolderOpen, FaCalendarAlt, FaUserMd, FaEllipsisV, FaEdit, FaT
 import './Faelle.css';
 
 function Faelle() {
-  const { currentUser } = useUser();
+  const { currentUser, addCase, updateCase, deleteCase, addPainDiaryEntry } = useUser();
   const [showAddModal, setShowAddModal] = useState(false);
   const [openMenuId, setOpenMenuId] = useState(null);
   const [viewCase, setViewCase] = useState(null);
@@ -47,15 +47,16 @@ function Faelle() {
   };
 
   const handleSaveCase = () => {
-    // Hier würde die Logik zum Speichern des Falls kommen
-    console.log('Neuer Fall:', {
+    const newCase = {
+      id: `case-${Date.now()}`,
       title: newCaseTitle,
       category: newCaseCategory,
       doctor: newCaseDoctor,
-      documents: selectedDocuments,
       status: 'laufend',
-      startDate: new Date().toISOString().split('T')[0]
-    });
+      startDate: new Date().toISOString().split('T')[0],
+      painDiary: []
+    };
+    addCase(newCase);
     setShowAddModal(false);
   };
 
@@ -75,7 +76,7 @@ function Faelle() {
 
   const handleDelete = (caseId) => {
     if (window.confirm('Fall wirklich löschen?')) {
-      console.log('Lösche Fall:', caseId);
+      deleteCase(caseId);
       setOpenMenuId(null);
     }
   };
@@ -96,14 +97,14 @@ function Faelle() {
   };
 
   const handleSavePainEntry = () => {
-    console.log('Neuer Schmerz-Eintrag:', {
-      caseId: painDiaryCase.id,
+    const newEntry = {
       date: painDate,
       time: painTime,
       painLevel,
       location: painLocation,
       notes: painNotes
-    });
+    };
+    addPainDiaryEntry(painDiaryCase.id, newEntry);
     setShowAddPainEntry(false);
   };
 
@@ -235,11 +236,9 @@ function Faelle() {
                     <button onClick={() => handleView(caseItem)}>
                       <FaFileAlt /> Details
                     </button>
-                    {caseItem.painDiary && (
-                      <button onClick={() => handleOpenPainDiary(caseItem)}>
-                        <FaHeartbeat /> Schmerztagebuch
-                      </button>
-                    )}
+                    <button onClick={() => handleOpenPainDiary(caseItem)}>
+                      <FaHeartbeat /> Schmerztagebuch
+                    </button>
                     <button onClick={() => handleEdit(caseItem)}>
                       <FaEdit /> Bearbeiten
                     </button>
@@ -382,6 +381,96 @@ function Faelle() {
                 disabled={!newCaseTitle || !newCaseCategory}
               >
                 Fall erstellen
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Case Modal */}
+      {editCase && (
+        <div className="modal-overlay" onClick={() => setEditCase(null)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Fall bearbeiten</h2>
+              <button className="modal-close-btn" onClick={() => setEditCase(null)}>×</button>
+            </div>
+
+            <div className="modal-body">
+              <div className="form-group">
+                <label>Fall-Titel *</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  placeholder="z.B. Meniskusverletzung links"
+                  value={editCase.title}
+                  onChange={(e) => setEditCase({...editCase, title: e.target.value})}
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Kategorie *</label>
+                <select
+                  className="form-select"
+                  value={editCase.category}
+                  onChange={(e) => setEditCase({...editCase, category: e.target.value})}
+                >
+                  <option value="">Bitte wählen...</option>
+                  {categories.map(cat => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label>Behandelnder Arzt</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  value={editCase.doctor}
+                  onChange={(e) => setEditCase({...editCase, doctor: e.target.value})}
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Status</label>
+                <select
+                  className="form-select"
+                  value={editCase.status}
+                  onChange={(e) => setEditCase({...editCase, status: e.target.value})}
+                >
+                  <option value="laufend">Laufend</option>
+                  <option value="abgeschlossen">Abgeschlossen</option>
+                  <option value="pausiert">Pausiert</option>
+                </select>
+              </div>
+
+              {editCase.status === 'abgeschlossen' && (
+                <div className="form-group">
+                  <label>Enddatum</label>
+                  <input
+                    type="date"
+                    className="form-input"
+                    value={editCase.endDate || ''}
+                    onChange={(e) => setEditCase({...editCase, endDate: e.target.value})}
+                  />
+                </div>
+              )}
+            </div>
+
+            <div className="modal-footer">
+              <button className="btn-cancel" onClick={() => setEditCase(null)}>
+                Abbrechen
+              </button>
+              <button
+                className="btn-submit"
+                onClick={() => {
+                  updateCase(editCase.id, editCase);
+                  setEditCase(null);
+                }}
+                disabled={!editCase.title || !editCase.category}
+              >
+                Speichern
               </button>
             </div>
           </div>

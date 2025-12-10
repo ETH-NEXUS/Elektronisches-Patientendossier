@@ -57,8 +57,68 @@ export const UserProvider = ({ children }) => {
     }));
   };
 
+  // Case Management Functions
+  const addCase = (newCase) => {
+    setUsers(prevUsers => ({
+      ...prevUsers,
+      [currentUserId]: {
+        ...prevUsers[currentUserId],
+        cases: [newCase, ...(prevUsers[currentUserId].cases || [])]
+      }
+    }));
+  };
+
+  const updateCase = (caseId, updatedData) => {
+    setUsers(prevUsers => ({
+      ...prevUsers,
+      [currentUserId]: {
+        ...prevUsers[currentUserId],
+        cases: prevUsers[currentUserId].cases.map(c =>
+          c.id === caseId ? { ...c, ...updatedData } : c
+        )
+      }
+    }));
+  };
+
+  const deleteCase = (caseId) => {
+    setUsers(prevUsers => ({
+      ...prevUsers,
+      [currentUserId]: {
+        ...prevUsers[currentUserId],
+        cases: prevUsers[currentUserId].cases.filter(c => c.id !== caseId)
+      }
+    }));
+  };
+
+  const addPainDiaryEntry = (caseId, entry) => {
+    setUsers(prevUsers => ({
+      ...prevUsers,
+      [currentUserId]: {
+        ...prevUsers[currentUserId],
+        cases: prevUsers[currentUserId].cases.map(c =>
+          c.id === caseId ? {
+            ...c,
+            painDiary: [entry, ...(c.painDiary || [])]
+          } : c
+        )
+      }
+    }));
+  };
+
   return (
-    <UserContext.Provider value={{ currentUser, switchUser, getAllUsers, currentUserId, addDocument, updateDocument, deleteDocument }}>
+    <UserContext.Provider value={{
+      currentUser,
+      switchUser,
+      getAllUsers,
+      currentUserId,
+      addDocument,
+      updateDocument,
+      deleteDocument,
+      addCase,
+      updateCase,
+      deleteCase,
+      addPainDiaryEntry
+    }}>
       {children}
     </UserContext.Provider>
   );
