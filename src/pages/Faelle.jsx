@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useUser } from '../context/UserContext';
-import { FaPlus, FaFolderOpen, FaCalendarAlt, FaUserMd, FaEllipsisV, FaEdit, FaTrash, FaFileAlt, FaHeartbeat } from 'react-icons/fa';
+import { FaPlus, FaFolderOpen, FaCalendarAlt, FaUserMd, FaEllipsisV, FaEdit, FaTrash, FaFileAlt, FaHeartbeat, FaChartLine } from 'react-icons/fa';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
 import './Faelle.css';
 
 function Faelle() {
-  const { currentUser, addCase, updateCase, deleteCase, addPainDiaryEntry } = useUser();
+  const { currentUser, addCase, updateCase, deleteCase, addPainDiaryEntry, deletePainDiaryEntry } = useUser();
   const [showAddModal, setShowAddModal] = useState(false);
   const [openMenuId, setOpenMenuId] = useState(null);
   const [viewCase, setViewCase] = useState(null);
@@ -105,6 +106,13 @@ function Faelle() {
       notes: painNotes
     };
     addPainDiaryEntry(painDiaryCase.id, newEntry);
+
+    // Update local painDiaryCase state to reflect new entry
+    setPainDiaryCase({
+      ...painDiaryCase,
+      painDiary: [newEntry, ...(painDiaryCase.painDiary || [])]
+    });
+
     setShowAddPainEntry(false);
   };
 
@@ -558,6 +566,94 @@ function Faelle() {
                         <div className="stat-label">Diagnosen/Berichte</div>
                       </div>
                     </div>
+
+                    {/* AI-Generated Case Summary */}
+                    {relatedDocuments.length > 0 && (() => {
+                      // Generate AI summary based on case details
+                      const patientName = currentUser.name.split(' ')[0];
+                      const caseAge = Math.floor((new Date() - new Date(viewCase.startDate)) / (1000 * 60 * 60 * 24));
+                      const labDocs = relatedDocuments.filter(d => d.category === 'Labor');
+                      const imagingDocs = relatedDocuments.filter(d => d.category === 'Bildgebung');
+                      const diagnosisDocs = relatedDocuments.filter(d => d.category === 'Diagnosen');
+
+                      let aiSummary = `${patientName} ${viewCase.status === 'laufend' ? 'leidet seit' : 'litt'} dem ${new Date(viewCase.startDate).toLocaleDateString('de-DE')} an ${viewCase.title.toLowerCase()}. `;
+
+                      if (viewCase.category === 'Orthopädie') {
+                        if (imagingDocs.length > 0) {
+                          aiSummary += `Eine ${imagingDocs[0].title.toLowerCase()} am ${new Date(imagingDocs[0].date).toLocaleDateString('de-DE')} zeigte Auffälligkeiten. `;
+                        }
+                        if (diagnosisDocs.length > 0) {
+                          aiSummary += `Daraufhin ${diagnosisDocs.length > 1 ? 'wurden mehrere therapeutische Maßnahmen' : 'wurde eine therapeutische Maßnahme'} eingeleitet, dokumentiert in ${diagnosisDocs.length} ${diagnosisDocs.length > 1 ? 'Berichten' : 'Bericht'}. `;
+                        }
+                        aiSummary += viewCase.status === 'laufend' ? 'Die Behandlung läuft weiterhin unter ärztlicher Betreuung.' : 'Die Behandlung wurde erfolgreich abgeschlossen.';
+
+                      } else if (viewCase.category === 'Kardiologie') {
+                        if (labDocs.length > 0) {
+                          aiSummary += `Laboruntersuchungen (${labDocs.length} ${labDocs.length > 1 ? 'Berichte' : 'Bericht'}) zeigten erhöhte Werte. `;
+                        }
+                        if (imagingDocs.length > 0) {
+                          aiSummary += `${imagingDocs[0].title} bestätigte die Diagnose. `;
+                        }
+                        aiSummary += `Eine medikamentöse Therapie wurde eingeleitet. `;
+                        aiSummary += viewCase.status === 'laufend' ? 'Regelmäßige Kontrollen werden durchgeführt.' : 'Die Werte haben sich stabilisiert.';
+
+                      } else if (viewCase.category === 'Gynäkologie') {
+                        if (imagingDocs.length > 0) {
+                          aiSummary += `${imagingDocs.length} Ultraschalluntersuchung${imagingDocs.length > 1 ? 'en' : ''} ${imagingDocs.length > 1 ? 'wurden' : 'wurde'} durchgeführt. `;
+                        }
+                        if (labDocs.length > 0) {
+                          aiSummary += `Laborwerte werden regelmäßig kontrolliert (${labDocs.length} ${labDocs.length > 1 ? 'Berichte' : 'Bericht'}). `;
+                        }
+                        aiSummary += viewCase.status === 'laufend' ? 'Die Betreuung erfolgt kontinuierlich.' : 'Die Behandlung wurde planmäßig abgeschlossen.';
+
+                      } else if (viewCase.category === 'Diabetologie') {
+                        if (labDocs.length > 0) {
+                          aiSummary += `HbA1c- und Blutzuckerwerte werden regelmäßig kontrolliert (${labDocs.length} Labor${labDocs.length > 1 ? 'berichte' : 'bericht'}). `;
+                        }
+                        aiSummary += `Die medikamentöse Einstellung wird kontinuierlich angepasst. `;
+                        aiSummary += viewCase.status === 'laufend' ? 'Weitere Verlaufskontrollen sind geplant.' : 'Die Blutzuckerwerte sind gut eingestellt.';
+
+                      } else if (viewCase.category === 'Geriatrie') {
+                        aiSummary += `Im Rahmen der geriatrischen Betreuung ${relatedDocuments.length > 1 ? 'wurden mehrere Untersuchungen' : 'wurde eine Untersuchung'} durchgeführt. `;
+                        if (labDocs.length > 0) {
+                          aiSummary += `Laborwerte werden engmaschig überwacht. `;
+                        }
+                        aiSummary += viewCase.status === 'laufend' ? 'Die multidisziplinäre Betreuung wird fortgesetzt.' : 'Die Behandlungsziele wurden erreicht.';
+
+                      } else if (viewCase.category === 'Rheumatologie') {
+                        if (labDocs.length > 0) {
+                          aiSummary += `Entzündungswerte wurden mehrfach kontrolliert (${labDocs.length} ${labDocs.length > 1 ? 'Berichte' : 'Bericht'}). `;
+                        }
+                        if (imagingDocs.length > 0) {
+                          aiSummary += `Bildgebende Verfahren dokumentierten den Verlauf. `;
+                        }
+                        aiSummary += viewCase.status === 'laufend' ? 'Die antirheumatische Therapie wird fortgeführt.' : 'Die Behandlung zeigte gute Erfolge.';
+
+                      } else {
+                        // Generic summary for other categories
+                        aiSummary += `Im Verlauf ${relatedDocuments.length > 1 ? 'wurden ' + relatedDocuments.length + ' Dokumente' : 'wurde ein Dokument'} erstellt. `;
+                        if (relatedDocuments[0]) {
+                          aiSummary += `Das neueste Dokument ("${relatedDocuments[0].title}") datiert vom ${new Date(relatedDocuments[0].date).toLocaleDateString('de-DE')}. `;
+                        }
+                        aiSummary += viewCase.status === 'laufend' ? 'Die Behandlung wird fortgesetzt.' : 'Die Behandlung wurde abgeschlossen.';
+                      }
+
+                      return (
+                        <div className="case-ai-summary">
+                          <div className="ai-summary-header">
+                            <FaHeartbeat />
+                            <h4>KI-Zusammenfassung</h4>
+                          </div>
+                          <div className="ai-summary-content">
+                            <p>{aiSummary}</p>
+                            <div className="ai-summary-meta">
+                              <span>🤖 Automatisch generiert basierend auf {relatedDocuments.length} verknüpften Dokumenten</span>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })()}
+
                     {relatedDocuments.length > 0 && (
                       <div className="case-summary-text">
                         <p>
@@ -640,6 +736,95 @@ function Faelle() {
                     </button>
                   </div>
 
+                  {/* Schmerzverlauf Chart & AI-Analyse */}
+                  {painDiaryCase.painDiary && painDiaryCase.painDiary.length > 0 && (() => {
+                    // Prepare chart data (reverse to show oldest first)
+                    const chartData = [...painDiaryCase.painDiary]
+                      .reverse()
+                      .map(entry => ({
+                        date: new Date(entry.date).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' }),
+                        painLevel: entry.painLevel,
+                        fullDate: entry.date
+                      }));
+
+                    // Calculate statistics
+                    const avgPain = (painDiaryCase.painDiary.reduce((sum, e) => sum + e.painLevel, 0) / painDiaryCase.painDiary.length).toFixed(1);
+                    const maxPain = Math.max(...painDiaryCase.painDiary.map(e => e.painLevel));
+                    const minPain = Math.min(...painDiaryCase.painDiary.map(e => e.painLevel));
+                    const latestPain = painDiaryCase.painDiary[0].painLevel;
+
+                    // Trend analysis
+                    const recentEntries = painDiaryCase.painDiary.slice(0, 3);
+                    const olderEntries = painDiaryCase.painDiary.slice(3, 6);
+                    const recentAvg = recentEntries.length > 0 ? recentEntries.reduce((sum, e) => sum + e.painLevel, 0) / recentEntries.length : 0;
+                    const olderAvg = olderEntries.length > 0 ? olderEntries.reduce((sum, e) => sum + e.painLevel, 0) / olderEntries.length : recentAvg;
+                    const trend = recentAvg < olderAvg - 0.5 ? 'verbessert' : recentAvg > olderAvg + 0.5 ? 'verschlechtert' : 'stabil';
+                    const trendIcon = trend === 'verbessert' ? '📉' : trend === 'verschlechtert' ? '📈' : '➡️';
+
+                    return (
+                      <>
+                        {/* AI Analysis Box */}
+                        <div className="pain-ai-analysis">
+                          <div className="ai-analysis-header">
+                            <FaChartLine />
+                            <h4>Schmerzanalyse</h4>
+                          </div>
+                          <div className="ai-analysis-content">
+                            <p>
+                              <strong>Aktueller Status:</strong> Ihr letzter Schmerz-Eintrag zeigt einen Wert von <span className="highlight-pain" style={{ color: getPainLevelColor(latestPain) }}>{latestPain}/10</span> ({getPainLevelLabel(latestPain)}).
+                            </p>
+                            <p>
+                              <strong>Verlauf {trendIcon}:</strong> Ihre Schmerzen haben sich in den letzten Messungen <span className="highlight-trend">{trend}</span>.
+                              Der Durchschnittswert liegt bei <strong>{avgPain}/10</strong>, mit Schwankungen zwischen {minPain} und {maxPain}.
+                            </p>
+                            <p>
+                              <strong>Empfehlung:</strong> {
+                                latestPain >= 7 ? "Bei anhaltend starken Schmerzen sollten Sie Ihren Arzt kontaktieren." :
+                                latestPain >= 5 ? "Dokumentieren Sie weiterhin regelmäßig und achten Sie auf Auslöser." :
+                                "Ihre Schmerzen sind im kontrollierbaren Bereich. Setzen Sie Ihre Therapie fort."
+                              }
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Pain Chart */}
+                        <div className="pain-chart-container">
+                          <h4><FaChartLine /> Schmerzverlauf</h4>
+                          <ResponsiveContainer width="100%" height={250}>
+                            <AreaChart data={chartData}>
+                              <defs>
+                                <linearGradient id="painGradient" x1="0" y1="0" x2="0" y2="1">
+                                  <stop offset="5%" stopColor="#e74c3c" stopOpacity={0.3}/>
+                                  <stop offset="95%" stopColor="#e74c3c" stopOpacity={0}/>
+                                </linearGradient>
+                              </defs>
+                              <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+                              <XAxis dataKey="date" stroke="#666" style={{ fontSize: '0.85rem' }} />
+                              <YAxis domain={[0, 10]} stroke="#666" style={{ fontSize: '0.85rem' }} />
+                              <Tooltip
+                                contentStyle={{
+                                  backgroundColor: '#fff',
+                                  border: '1px solid #ddd',
+                                  borderRadius: '8px',
+                                  padding: '8px 12px'
+                                }}
+                                labelStyle={{ fontWeight: 'bold', color: '#333' }}
+                              />
+                              <Area
+                                type="monotone"
+                                dataKey="painLevel"
+                                stroke="#e74c3c"
+                                strokeWidth={3}
+                                fill="url(#painGradient)"
+                                name="Schmerzstärke"
+                              />
+                            </AreaChart>
+                          </ResponsiveContainer>
+                        </div>
+                      </>
+                    );
+                  })()}
+
                   <div className="pain-entries">
                     {painDiaryCase.painDiary && painDiaryCase.painDiary.length > 0 ? (
                       painDiaryCase.painDiary.map((entry, index) => (
@@ -649,16 +834,33 @@ function Faelle() {
                               <FaCalendarAlt />
                               <span>{entry.date} um {entry.time}</span>
                             </div>
-                            <div
-                              className="pain-level-badge"
-                              style={{
-                                backgroundColor: `${getPainLevelColor(entry.painLevel)}20`,
-                                color: getPainLevelColor(entry.painLevel),
-                                borderLeft: `4px solid ${getPainLevelColor(entry.painLevel)}`
-                              }}
-                            >
-                              <span className="pain-level-number">{entry.painLevel}/10</span>
-                              <span className="pain-level-label">{getPainLevelLabel(entry.painLevel)}</span>
+                            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                              <div
+                                className="pain-level-badge"
+                                style={{
+                                  backgroundColor: `${getPainLevelColor(entry.painLevel)}20`,
+                                  color: getPainLevelColor(entry.painLevel),
+                                  borderLeft: `4px solid ${getPainLevelColor(entry.painLevel)}`
+                                }}
+                              >
+                                <span className="pain-level-number">{entry.painLevel}/10</span>
+                                <span className="pain-level-label">{getPainLevelLabel(entry.painLevel)}</span>
+                              </div>
+                              <button
+                                className="pain-entry-delete-btn"
+                                onClick={() => {
+                                  if (window.confirm('Eintrag wirklich löschen?')) {
+                                    deletePainDiaryEntry(painDiaryCase.id, index);
+                                    setPainDiaryCase({
+                                      ...painDiaryCase,
+                                      painDiary: painDiaryCase.painDiary.filter((_, i) => i !== index)
+                                    });
+                                  }
+                                }}
+                                title="Eintrag löschen"
+                              >
+                                <FaTrash />
+                              </button>
                             </div>
                           </div>
                           <div className="pain-entry-body">

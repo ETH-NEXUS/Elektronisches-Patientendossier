@@ -1,13 +1,79 @@
+import { useState } from 'react';
 import { useUser } from '../context/UserContext';
-import { FaCheckCircle, FaExclamationTriangle, FaClock, FaHeartbeat, FaStethoscope, FaEye, FaTooth, FaLungs } from 'react-icons/fa';
+import { FaCheckCircle, FaExclamationTriangle, FaClock, FaHeartbeat, FaStethoscope, FaEye, FaTooth, FaLungs, FaPhone, FaCalendarAlt, FaPlus, FaTimes, FaSyringe, FaTrash } from 'react-icons/fa';
 import './Pages.css';
 import './Praevention.css';
 
 function Praevention() {
-  const { currentUser } = useUser();
+  const { currentUser, addPreventionItem, deletePreventionItem } = useUser();
 
   // Prävention-Daten des aktuellen Users
   const preventionData = currentUser.preventionData || [];
+
+  // Modal States
+  const [showBookingModal, setShowBookingModal] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [showAddItemModal, setShowAddItemModal] = useState(false);
+
+  // Add Item State
+  const [newItemName, setNewItemName] = useState('');
+  const [newItemCategory, setNewItemCategory] = useState('Vorsorge');
+  const [newItemInterval, setNewItemInterval] = useState('');
+  const [selectedDoctorId, setSelectedDoctorId] = useState('primary');
+  const [newItemDoctor, setNewItemDoctor] = useState('');
+  const [newItemDoctorPhone, setNewItemDoctorPhone] = useState('');
+  const [newItemDoctorSpecialty, setNewItemDoctorSpecialty] = useState('');
+
+  // Booking State
+  const [bookingDate, setBookingDate] = useState('');
+  const [bookingTime, setBookingTime] = useState('');
+  const [bookingNotes, setBookingNotes] = useState('');
+
+  // Erstelle Ärzte-Liste aus allen verfügbaren Quellen
+  const availableDoctors = [
+    {
+      id: 'none',
+      name: 'Kein Arzt',
+      phone: '',
+      specialty: ''
+    },
+    {
+      id: 'primary',
+      name: currentUser.primaryDoctor.name,
+      phone: currentUser.primaryDoctor.phone,
+      specialty: currentUser.primaryDoctor.specialty
+    },
+    ...(currentUser.accessGrants || []).map((grant, index) => ({
+      id: `grant-${index}`,
+      name: grant.name,
+      phone: grant.phone,
+      specialty: grant.specialty
+    })),
+    ...(currentUser.doctorsFromDocuments || [])
+      .filter(doc => !doc.hasAccess)
+      .map((doc, index) => ({
+        id: `doc-${index}`,
+        name: doc.name,
+        phone: '',
+        specialty: doc.specialty
+      }))
+  ];
+
+  const handleDoctorChange = (doctorId) => {
+    setSelectedDoctorId(doctorId);
+    const doctor = availableDoctors.find(d => d.id === doctorId);
+    if (doctor) {
+      if (doctorId === 'none') {
+        setNewItemDoctor('');
+        setNewItemDoctorPhone('');
+        setNewItemDoctorSpecialty('');
+      } else {
+        setNewItemDoctor(doctor.name);
+        setNewItemDoctorPhone(doctor.phone);
+        setNewItemDoctorSpecialty(doctor.specialty);
+      }
+    }
+  };
 
   const getStatusIcon = (status) => {
     switch(status) {
@@ -41,7 +107,7 @@ function Praevention() {
 
   const getCategoryIcon = (category) => {
     switch(category) {
-      case 'Impfungen': return <FaHeartbeat />;
+      case 'Impfungen': return <FaSyringe />;
       case 'Vorsorge': return <FaStethoscope />;
       case 'Screening': return <FaEye />;
       case 'Dental': return <FaTooth />;
@@ -50,87 +116,493 @@ function Praevention() {
     }
   };
 
-  return (
-    <div className="page-container">
-      <h1>Prävention & Vorsorge</h1>
-      <p>Ihre Vorsorgeuntersuchungen, Screenings und Impfungen im Überblick</p>
+  const handleBookAppointment = (item) => {
+    setSelectedItem(item);
+    setShowBookingModal(true);
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    setBookingDate(tomorrow.toISOString().split('T')[0]);
+    setBookingTime('09:00');
+    setBookingNotes('');
+  };
 
-      <div className="prevention-grid">
-        {preventionData.length > 0 ? (
-          preventionData.map((item, index) => (
-            <div
-              key={index}
-              className="prevention-card"
-              style={{
-                borderLeft: `5px solid ${getStatusColor(item.status)}`
-              }}
-            >
-              <div className="prevention-card-header">
-                <div className="prevention-icon" style={{ color: getStatusColor(item.status) }}>
-                  {getCategoryIcon(item.category)}
-                </div>
-                <div
-                  className="prevention-status-badge"
-                  style={{
-                    backgroundColor: `${getStatusColor(item.status)}15`,
-                    color: getStatusColor(item.status)
-                  }}
-                >
-                  {getStatusIcon(item.status)}
-                  <span>{getStatusLabel(item.status)}</span>
-                </div>
-              </div>
+  const handleCallDoctor = (phone) => {
+    window.location.href = `tel:${phone}`;
+  };
 
-              <div className="prevention-card-body">
-                <h3>{item.name}</h3>
-                <div className="prevention-category">{item.category}</div>
+  const handleConfirmBooking = () => {
+    alert(`Terminanfrage gesendet!\n\nUntersuchung: ${selectedItem.name}\nArzt: ${selectedItem.doctor}\nDatum: ${new Date(bookingDate).toLocaleDateString('de-DE')}\nUhrzeit: ${bookingTime}\n\nSie erhalten eine Bestätigung per E-Mail.`);
+    setShowBookingModal(false);
+  };
 
-                <div className="prevention-details">
-                  {item.lastDate && (
-                    <div className="prevention-detail-item">
-                      <span className="detail-label">Letzte Durchführung:</span>
-                      <span className="detail-value">{item.lastDate}</span>
-                    </div>
-                  )}
-                  {item.nextDue && (
-                    <div className="prevention-detail-item">
-                      <span className="detail-label">Nächster Termin:</span>
-                      <span className="detail-value">{item.nextDue}</span>
-                    </div>
-                  )}
-                  {item.daysUntilDue !== undefined && (
-                    <div className="prevention-detail-item">
-                      <span className="detail-label">
-                        {item.daysUntilDue < 0 ? 'Überfällig seit:' : 'Noch:'}
-                      </span>
-                      <span className="detail-value">
-                        {Math.abs(item.daysUntilDue)} Tage
-                      </span>
-                    </div>
-                  )}
-                  {item.interval && (
-                    <div className="prevention-detail-item">
-                      <span className="detail-label">Intervall:</span>
-                      <span className="detail-value">{item.interval}</span>
-                    </div>
-                  )}
-                </div>
+  const handleAddItem = () => {
+    setShowAddItemModal(true);
+    setNewItemName('');
+    setNewItemCategory('Vorsorge');
+    setNewItemInterval('');
+    setSelectedDoctorId('primary');
+    setNewItemDoctor(currentUser.primaryDoctor.name);
+    setNewItemDoctorPhone(currentUser.primaryDoctor.phone);
+    setNewItemDoctorSpecialty(currentUser.primaryDoctor.specialty);
+  };
 
-                {item.description && (
-                  <div className="prevention-description">
-                    {item.description}
-                  </div>
-                )}
-              </div>
+  const handleSaveNewItem = () => {
+    if (!newItemName || !newItemInterval) {
+      alert('Bitte füllen Sie alle Pflichtfelder aus.');
+      return;
+    }
+
+    const newItem = {
+      name: newItemName,
+      category: newItemCategory,
+      status: 'empfohlen',
+      lastDate: null,
+      nextDue: null,
+      daysUntilDue: null,
+      interval: newItemInterval,
+      description: 'Benutzerdefiniertes Präventions-Item',
+      doctor: newItemDoctor || null,
+      doctorPhone: newItemDoctorPhone || null,
+      doctorSpecialty: newItemDoctorSpecialty || null
+    };
+
+    addPreventionItem(newItem);
+    setShowAddItemModal(false);
+  };
+
+  const handleDeleteItem = (index) => {
+    if (confirm('Möchten Sie dieses Präventions-Item wirklich löschen?')) {
+      deletePreventionItem(index);
+    }
+  };
+
+  // Gruppiere nach Status
+  const groupedData = {
+    überfällig: preventionData.filter(item => item.status === 'überfällig'),
+    bald_fällig: preventionData.filter(item => item.status === 'bald_fällig'),
+    empfohlen: preventionData.filter(item => item.status === 'empfohlen'),
+    aktuell: preventionData.filter(item => item.status === 'aktuell')
+  };
+
+  const renderPreventionCard = (item, index) => (
+    <div
+      key={index}
+      className={`prevention-card ${item.status === 'überfällig' ? 'urgent-card' : ''}`}
+      style={{ borderLeft: `5px solid ${getStatusColor(item.status)}` }}
+    >
+      <div className="prevention-card-header">
+        <div className="prevention-icon" style={{ color: getStatusColor(item.status) }}>
+          {getCategoryIcon(item.category)}
+        </div>
+        <div
+          className="prevention-status-badge"
+          style={{
+            backgroundColor: `${getStatusColor(item.status)}15`,
+            color: getStatusColor(item.status)
+          }}
+        >
+          {getStatusIcon(item.status)}
+          <span>{getStatusLabel(item.status)}</span>
+        </div>
+      </div>
+
+      <div className="prevention-card-body">
+        <div className="prevention-title-row">
+          <h3>{item.name}</h3>
+          <button
+            className="btn-delete-item"
+            onClick={() => handleDeleteItem(index)}
+            title="Item löschen"
+          >
+            <FaTrash />
+          </button>
+        </div>
+        <div className="prevention-category">{item.category}</div>
+
+        <div className="prevention-details">
+          {item.lastDate && (
+            <div className="prevention-detail-item">
+              <span className="detail-label">{item.status === 'überfällig' ? 'Letzte Durchführung:' : 'Durchgeführt am:'}</span>
+              <span className="detail-value">{item.lastDate}</span>
             </div>
-          ))
-        ) : (
-          <div className="no-prevention-data">
-            <FaHeartbeat className="no-data-icon" />
-            <p>Keine Präventionsdaten verfügbar</p>
+          )}
+          {item.status === 'überfällig' && item.daysUntilDue !== undefined && (
+            <div className="prevention-detail-item urgent-detail">
+              <span className="detail-label">Überfällig seit:</span>
+              <span className="detail-value urgent-text">
+                {Math.abs(item.daysUntilDue)} Tagen
+              </span>
+            </div>
+          )}
+          {item.nextDue && item.status !== 'überfällig' && (
+            <div className="prevention-detail-item">
+              <span className="detail-label">Nächster Termin:</span>
+              <span className="detail-value">{item.nextDue}</span>
+            </div>
+          )}
+          {item.daysUntilDue !== undefined && item.daysUntilDue > 0 && (
+            <div className="prevention-detail-item">
+              <span className="detail-label">Noch:</span>
+              <span className="detail-value">{item.daysUntilDue} Tage</span>
+            </div>
+          )}
+          {item.interval && (
+            <div className="prevention-detail-item">
+              <span className="detail-label">Intervall:</span>
+              <span className="detail-value">{item.interval}</span>
+            </div>
+          )}
+        </div>
+
+        {item.description && (
+          <div className="prevention-description">
+            {item.description}
           </div>
         )}
+
+        {item.doctor && (
+          <div className="prevention-doctor-info">
+            <div className="doctor-name">
+              <FaStethoscope />
+              <span>{item.doctor}</span>
+            </div>
+            {item.doctorSpecialty && (
+              <div className="doctor-specialty">{item.doctorSpecialty}</div>
+            )}
+            {item.doctorPhone && (
+              <div className="doctor-phone">
+                <FaPhone />
+                <span>{item.doctorPhone}</span>
+              </div>
+            )}
+          </div>
+        )}
+
+        <div className="prevention-actions">
+          {item.doctor && (
+            <>
+              <button
+                className={`btn-book-appointment ${item.status === 'überfällig' ? 'primary' : ''}`}
+                onClick={() => handleBookAppointment(item)}
+              >
+                <FaCalendarAlt /> Termin buchen
+              </button>
+              {item.doctorPhone && (
+                <button
+                  className={`btn-call-doctor ${item.status !== 'überfällig' ? 'secondary' : ''}`}
+                  onClick={() => handleCallDoctor(item.doctorPhone)}
+                >
+                  <FaPhone /> Anrufen
+                </button>
+              )}
+            </>
+          )}
+          {!item.doctor && (
+            <div className="no-doctor-info">
+              Kein Arzt zugeordnet
+            </div>
+          )}
+        </div>
       </div>
+    </div>
+  );
+
+  return (
+    <div className="page-container">
+      <div className="praevention-header">
+        <div>
+          <h1>Prävention & Vorsorge</h1>
+          <p>Ihre Vorsorgeuntersuchungen, Screenings und Impfungen im Überblick</p>
+        </div>
+        <button className="btn-add-prevention" onClick={handleAddItem}>
+          <FaPlus /> Eigenes Item hinzufügen
+        </button>
+      </div>
+
+      {/* Statistiken */}
+      <div className="prevention-stats">
+        <div className="stat-card urgent">
+          <div className="stat-number">{groupedData.überfällig.length}</div>
+          <div className="stat-label">Überfällig</div>
+        </div>
+        <div className="stat-card warning">
+          <div className="stat-number">{groupedData.bald_fällig.length}</div>
+          <div className="stat-label">Bald fällig</div>
+        </div>
+        <div className="stat-card info">
+          <div className="stat-number">{groupedData.empfohlen.length}</div>
+          <div className="stat-label">Empfohlen</div>
+        </div>
+        <div className="stat-card success">
+          <div className="stat-number">{groupedData.aktuell.length}</div>
+          <div className="stat-label">Aktuell</div>
+        </div>
+      </div>
+
+      {/* Überfällige Items */}
+      {groupedData.überfällig.length > 0 && (
+        <div className="prevention-section urgent-section">
+          <h2>🚨 Dringend - Überfällige Untersuchungen</h2>
+          <div className="prevention-grid">
+            {groupedData.überfällig.map((item, index) =>
+              renderPreventionCard(item, preventionData.indexOf(item))
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Bald fällige Items */}
+      {groupedData.bald_fällig.length > 0 && (
+        <div className="prevention-section">
+          <h2>⏰ Demnächst fällig</h2>
+          <div className="prevention-grid">
+            {groupedData.bald_fällig.map((item, index) =>
+              renderPreventionCard(item, preventionData.indexOf(item))
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Empfohlene Items */}
+      {groupedData.empfohlen.length > 0 && (
+        <div className="prevention-section">
+          <h2>💡 Empfohlen</h2>
+          <div className="prevention-grid">
+            {groupedData.empfohlen.map((item, index) =>
+              renderPreventionCard(item, preventionData.indexOf(item))
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Aktuelle Items - Collapsed */}
+      {groupedData.aktuell.length > 0 && (
+        <details className="prevention-section-collapsed">
+          <summary>
+            <h2>✅ Aktuell ({groupedData.aktuell.length})</h2>
+          </summary>
+          <div className="prevention-grid">
+            {groupedData.aktuell.map((item, index) =>
+              renderPreventionCard(item, preventionData.indexOf(item))
+            )}
+          </div>
+        </details>
+      )}
+
+      {/* Booking Modal */}
+      {showBookingModal && selectedItem && (
+        <div className="modal-overlay" onClick={() => setShowBookingModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Termin buchen</h2>
+              <button className="modal-close-btn" onClick={() => setShowBookingModal(false)}>
+                <FaTimes />
+              </button>
+            </div>
+
+            <div className="modal-body">
+              <div className="booking-summary">
+                <h3>{selectedItem.name}</h3>
+                <div className="booking-doctor">
+                  <FaStethoscope />
+                  <div>
+                    <div className="doctor-name">{selectedItem.doctor}</div>
+                    {selectedItem.doctorSpecialty && (
+                      <div className="doctor-specialty">{selectedItem.doctorSpecialty}</div>
+                    )}
+                    {selectedItem.doctorPhone && (
+                      <div className="doctor-phone">
+                        <FaPhone /> {selectedItem.doctorPhone}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label>Wunschdatum *</label>
+                <input
+                  type="date"
+                  className="form-input"
+                  value={bookingDate}
+                  onChange={(e) => setBookingDate(e.target.value)}
+                  min={new Date().toISOString().split('T')[0]}
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Wunschuhrzeit *</label>
+                <select
+                  className="form-select"
+                  value={bookingTime}
+                  onChange={(e) => setBookingTime(e.target.value)}
+                >
+                  <option value="08:00">08:00 Uhr</option>
+                  <option value="09:00">09:00 Uhr</option>
+                  <option value="10:00">10:00 Uhr</option>
+                  <option value="11:00">11:00 Uhr</option>
+                  <option value="13:00">13:00 Uhr</option>
+                  <option value="14:00">14:00 Uhr</option>
+                  <option value="15:00">15:00 Uhr</option>
+                  <option value="16:00">16:00 Uhr</option>
+                  <option value="17:00">17:00 Uhr</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label>Notizen (optional)</label>
+                <textarea
+                  className="form-textarea"
+                  rows="3"
+                  placeholder="z.B. Bevorzugte Vormittags-Termine, besondere Anliegen..."
+                  value={bookingNotes}
+                  onChange={(e) => setBookingNotes(e.target.value)}
+                />
+              </div>
+
+              <div className="booking-note">
+                <strong>Hinweis:</strong> Dies ist eine Terminanfrage. Sie erhalten eine Bestätigung per E-Mail, sobald die Praxis Ihre Anfrage bearbeitet hat.
+              </div>
+            </div>
+
+            <div className="modal-footer">
+              <button className="btn-cancel" onClick={() => setShowBookingModal(false)}>
+                Abbrechen
+              </button>
+              <button className="btn-submit" onClick={handleConfirmBooking}>
+                Terminanfrage senden
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add Item Modal */}
+      {showAddItemModal && (
+        <div className="modal-overlay" onClick={() => setShowAddItemModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Eigenes Präventions-Item hinzufügen</h2>
+              <button className="modal-close-btn" onClick={() => setShowAddItemModal(false)}>
+                <FaTimes />
+              </button>
+            </div>
+
+            <div className="modal-body">
+              <p className="section-description">
+                Fügen Sie Ihre eigenen Vorsorge-Untersuchungen hinzu, z.B. jährliche medizinische Massage, Osteopathie, etc.
+              </p>
+
+              <div className="form-group">
+                <label>Bezeichnung *</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  placeholder="z.B. Medizinische Massage"
+                  value={newItemName}
+                  onChange={(e) => setNewItemName(e.target.value)}
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Kategorie *</label>
+                <select
+                  className="form-select"
+                  value={newItemCategory}
+                  onChange={(e) => setNewItemCategory(e.target.value)}
+                >
+                  <option value="Vorsorge">Vorsorge</option>
+                  <option value="Screening">Screening</option>
+                  <option value="Check-up">Check-up</option>
+                  <option value="Dental">Dental</option>
+                  <option value="Impfungen">Impfungen</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label>Intervall *</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  placeholder="z.B. Jährlich, Alle 6 Monate, Alle 2 Jahre"
+                  value={newItemInterval}
+                  onChange={(e) => setNewItemInterval(e.target.value)}
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Arzt/Spezialist</label>
+                <select
+                  className="form-select"
+                  value={selectedDoctorId}
+                  onChange={(e) => handleDoctorChange(e.target.value)}
+                >
+                  {availableDoctors.map(doctor => (
+                    <option key={doctor.id} value={doctor.id}>
+                      {doctor.name}
+                      {doctor.specialty && doctor.id !== 'none' && ` (${doctor.specialty})`}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {selectedDoctorId !== 'none' && (
+                <>
+                  <div className="form-group">
+                    <label>Arzt-Name (automatisch ausgefüllt)</label>
+                    <input
+                      type="text"
+                      className="form-input auto-filled"
+                      value={newItemDoctor}
+                      readOnly
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Telefonnummer (automatisch ausgefüllt)</label>
+                    <input
+                      type="tel"
+                      className="form-input auto-filled"
+                      placeholder="Keine Telefonnummer hinterlegt"
+                      value={newItemDoctorPhone}
+                      readOnly
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Fachgebiet (automatisch ausgefüllt)</label>
+                    <input
+                      type="text"
+                      className="form-input auto-filled"
+                      value={newItemDoctorSpecialty}
+                      readOnly
+                    />
+                  </div>
+                </>
+              )}
+
+              {selectedDoctorId === 'none' && (
+                <div className="no-doctor-warning">
+                  <strong>Hinweis:</strong> Ohne zugeordneten Arzt können Sie für dieses Item keine Termine buchen.
+                </div>
+              )}
+            </div>
+
+            <div className="modal-footer">
+              <button className="btn-cancel" onClick={() => setShowAddItemModal(false)}>
+                Abbrechen
+              </button>
+              <button
+                className="btn-submit"
+                onClick={handleSaveNewItem}
+                disabled={!newItemName || !newItemInterval}
+              >
+                Item hinzufügen
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

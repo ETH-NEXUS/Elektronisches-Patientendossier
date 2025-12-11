@@ -3,6 +3,7 @@ import './Profile.css';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
+import { QRCodeSVG } from 'qrcode.react';
 
 function Profile() {
   const navigate = useNavigate();
@@ -256,6 +257,69 @@ function Profile() {
               <div className="contact-row">
                 <span>📧</span>
                 <span>{currentUser.emergencyContact.email}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Notfall-QR-Code */}
+        <div className="profile-section qr-section">
+          <h2>📱 Notfall-QR-Code</h2>
+          <p className="section-description">
+            Scannen Sie diesen QR-Code, um im Notfall schnell auf wichtige medizinische Informationen zuzugreifen (Allergien, Blutgruppe, Medikamente, Notfallkontakte).
+          </p>
+          <div className="qr-code-container">
+            <div className="qr-code-wrapper">
+              <QRCodeSVG
+                value={`${window.location.origin}/notfall/${currentUser.id}`}
+                size={200}
+                level="H"
+                includeMargin={true}
+              />
+            </div>
+            <div className="qr-code-info">
+              <div className="qr-warning">
+                <strong>⚠️ Wichtig:</strong> Dieser QR-Code gewährt Zugriff auf Ihre Notfalldaten ohne Login. Bewahren Sie ihn sicher auf.
+              </div>
+              <div className="qr-actions">
+                <button
+                  className="btn-download-qr"
+                  onClick={() => {
+                    const svg = document.querySelector('.qr-code-wrapper svg');
+                    const svgData = new XMLSerializer().serializeToString(svg);
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    const img = new Image();
+                    img.onload = () => {
+                      canvas.width = img.width;
+                      canvas.height = img.height;
+                      ctx.drawImage(img, 0, 0);
+                      const pngFile = canvas.toDataURL('image/png');
+                      const downloadLink = document.createElement('a');
+                      downloadLink.download = `notfall-qr-${currentUser.name.replace(/\s+/g, '-')}.png`;
+                      downloadLink.href = pngFile;
+                      downloadLink.click();
+                    };
+                    img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+                  }}
+                >
+                  💾 QR-Code herunterladen
+                </button>
+                <button
+                  className="btn-print-qr"
+                  onClick={() => window.print()}
+                >
+                  🖨️ QR-Code drucken
+                </button>
+              </div>
+              <div className="qr-usage-tips">
+                <h4>Verwendungsempfehlungen:</h4>
+                <ul>
+                  <li>Speichern Sie den QR-Code auf Ihrem Smartphone-Sperrbildschirm</li>
+                  <li>Drucken Sie ihn aus und tragen Sie ihn bei sich</li>
+                  <li>Bewahren Sie eine Kopie in Ihrer Brieftasche auf</li>
+                  <li>Geben Sie eine Kopie an Vertrauenspersonen weiter</li>
+                </ul>
               </div>
             </div>
           </div>

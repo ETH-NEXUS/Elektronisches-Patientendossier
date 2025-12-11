@@ -21,6 +21,12 @@ body {
   min-height: calc(100vh - 144px);
 }
 
+.notfall-content {
+  min-height: 100vh;
+  padding: 0;
+  background-color: #ffffff;
+}
+
 #root {
   margin: 0;
   padding: 0;

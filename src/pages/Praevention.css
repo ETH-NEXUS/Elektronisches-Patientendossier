@@ -1,12 +1,107 @@
 /* Prävention-Seite Styles */
 
+.praevention-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.btn-add-prevention {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-add-prevention:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+}
+
+/* Statistik-Cards */
+.prevention-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.stat-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e0e0e0;
+  transition: all 0.3s;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.stat-card.urgent {
+  border-left: 4px solid #e74c3c;
+}
+
+.stat-card.warning {
+  border-left: 4px solid #f39c12;
+}
+
+.stat-card.info {
+  border-left: 4px solid #3498db;
+}
+
+.stat-card.success {
+  border-left: 4px solid #27ae60;
+}
+
+.stat-number {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  font-size: 0.95rem;
+  color: #7f8c8d;
+  font-weight: 500;
+}
+
+/* Sections */
+.prevention-section {
+  margin-bottom: 3rem;
+}
+
+.prevention-section h2 {
+  margin-bottom: 1.5rem;
+  color: #2c3e50;
+  font-size: 1.5rem;
+}
+
+.prevention-section.urgent-section h2 {
+  color: #e74c3c;
+}
+
 .prevention-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   gap: 1.5rem;
-  margin-top: 2rem;
 }
 
+/* Cards */
 .prevention-card {
   background: white;
   border-radius: 12px;
@@ -19,6 +114,11 @@
 .prevention-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.prevention-card.urgent-card {
+  border-left-width: 5px;
+  background: linear-gradient(135deg, #fff 0%, #fff5f5 100%);
 }
 
 .prevention-card-header {
@@ -82,6 +182,13 @@
   align-items: center;
 }
 
+.prevention-detail-item.urgent-detail {
+  background-color: #fff5f5;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  border-left: 3px solid #e74c3c;
+}
+
 .detail-label {
   color: #7f8c8d;
   font-size: 0.9rem;
@@ -94,6 +201,11 @@
   font-weight: 700;
 }
 
+.detail-value.urgent-text {
+  color: #e74c3c;
+  font-weight: 800;
+}
+
 .prevention-description {
   margin-top: 1rem;
   padding: 1rem;
@@ -104,6 +216,220 @@
   line-height: 1.5;
 }
 
+/* Arzt-Infos */
+.prevention-doctor-info {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #f0f8ff;
+  border-radius: 8px;
+  border-left: 3px solid #3498db;
+}
+
+.prevention-doctor-info .doctor-name {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 0.35rem;
+}
+
+.prevention-doctor-info .doctor-name svg {
+  color: #3498db;
+  font-size: 1.1rem;
+}
+
+.prevention-doctor-info .doctor-specialty {
+  font-size: 0.85rem;
+  color: #7f8c8d;
+  margin-bottom: 0.5rem;
+  margin-left: 1.6rem;
+}
+
+.prevention-doctor-info .doctor-phone {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  color: #34495e;
+  margin-top: 0.5rem;
+  margin-left: 1.6rem;
+}
+
+.prevention-doctor-info .doctor-phone svg {
+  color: #27ae60;
+  font-size: 0.95rem;
+}
+
+.prevention-doctor-info.compact {
+  padding: 0.75rem 1rem;
+  background-color: #fafafa;
+  border-left: 2px solid #95a5a6;
+  font-size: 0.9rem;
+  color: #7f8c8d;
+}
+
+/* Actions */
+.prevention-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.btn-book-appointment,
+.btn-call-doctor {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-book-appointment {
+  background-color: #3498db;
+  color: white;
+}
+
+.btn-book-appointment.primary {
+  background-color: #e74c3c;
+}
+
+.btn-book-appointment.primary:hover {
+  background-color: #c0392b;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+}
+
+.btn-book-appointment:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+}
+
+.btn-call-doctor {
+  background-color: #27ae60;
+  color: white;
+}
+
+.btn-call-doctor.secondary {
+  background-color: #95a5a6;
+}
+
+.btn-call-doctor.secondary:hover {
+  background-color: #7f8c8d;
+}
+
+.btn-call-doctor:hover {
+  background-color: #229954;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+}
+
+/* Collapsed Section */
+.prevention-section-collapsed {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border: 1px solid #e0e0e0;
+}
+
+.prevention-section-collapsed summary {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.prevention-section-collapsed summary::-webkit-details-marker {
+  display: none;
+}
+
+.prevention-section-collapsed summary h2 {
+  margin: 0;
+  font-size: 1.3rem;
+  color: #27ae60;
+}
+
+.prevention-section-collapsed summary:hover h2 {
+  color: #229954;
+}
+
+.prevention-section-collapsed[open] .prevention-grid {
+  margin-top: 1.5rem;
+}
+
+/* Booking Modal */
+.booking-summary {
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #f0f8ff 0%, #e3f2fd 100%);
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid #3498db;
+}
+
+.booking-summary h3 {
+  margin: 0 0 1rem 0;
+  color: #2c3e50;
+  font-size: 1.4rem;
+}
+
+.booking-doctor {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.booking-doctor svg {
+  font-size: 1.5rem;
+  color: #3498db;
+  margin-top: 0.25rem;
+}
+
+.booking-doctor .doctor-name {
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 0.25rem;
+}
+
+.booking-doctor .doctor-specialty {
+  font-size: 0.9rem;
+  color: #7f8c8d;
+  margin-bottom: 0.5rem;
+}
+
+.booking-doctor .doctor-phone {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  color: #34495e;
+}
+
+.booking-doctor .doctor-phone svg {
+  color: #27ae60;
+}
+
+.booking-note {
+  padding: 1rem;
+  background-color: #fff9e6;
+  border-radius: 8px;
+  border-left: 3px solid #f39c12;
+  color: #7f8c8d;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-top: 1rem;
+}
+
+/* No Data */
 .no-prevention-data {
   grid-column: 1 / -1;
   text-align: center;
@@ -125,6 +451,67 @@
   margin: 0;
 }
 
+/* Title Row with Delete Button */
+.prevention-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.prevention-title-row h3 {
+  flex: 1;
+  margin: 0;
+}
+
+.btn-delete-item {
+  background: none;
+  border: none;
+  color: #e74c3c;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-delete-item:hover {
+  background-color: #fff5f5;
+  transform: scale(1.1);
+}
+
+/* Auto-filled Fields */
+.form-input.auto-filled {
+  background-color: #f8f9fa !important;
+  color: #5a6c7d;
+  cursor: not-allowed;
+}
+
+/* No Doctor Warning/Info */
+.no-doctor-warning {
+  padding: 1rem;
+  background-color: #fff9e6;
+  border-radius: 8px;
+  border-left: 3px solid #f39c12;
+  color: #7f8c8d;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-top: 1rem;
+}
+
+.no-doctor-info {
+  text-align: center;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  color: #95a5a6;
+  font-size: 0.95rem;
+  font-style: italic;
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
   .prevention-grid {
@@ -134,6 +521,21 @@
 }
 
 @media (max-width: 768px) {
+  .praevention-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .btn-add-prevention {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .prevention-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   .prevention-grid {
     grid-template-columns: 1fr;
     gap: 1rem;
@@ -155,9 +557,17 @@
     padding: 0.4rem 0.85rem;
     font-size: 0.75rem;
   }
+
+  .prevention-actions {
+    flex-direction: column;
+  }
 }
 
 @media (max-width: 480px) {
+  .prevention-stats {
+    grid-template-columns: 1fr;
+  }
+
   .prevention-card-header {
     flex-direction: column;
     align-items: flex-start;
@@ -167,5 +577,9 @@
   .prevention-status-badge {
     width: 100%;
     justify-content: center;
+  }
+
+  .stat-number {
+    font-size: 2rem;
   }
 }

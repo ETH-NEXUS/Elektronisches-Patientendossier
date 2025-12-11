@@ -720,6 +720,133 @@
   font-weight: 600;
 }
 
+.pain-entry-delete-btn {
+  background: none;
+  border: none;
+  color: #e74c3c;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pain-entry-delete-btn:hover {
+  background-color: #fee;
+  transform: scale(1.1);
+}
+
+.pain-entry-delete-btn:active {
+  transform: scale(0.95);
+}
+
+/* AI Analysis & Chart */
+.pain-ai-analysis {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.ai-analysis-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.ai-analysis-header svg {
+  font-size: 1.5rem;
+}
+
+.ai-analysis-header h4 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.ai-analysis-content p {
+  margin: 0.75rem 0;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.ai-analysis-content p:last-child {
+  margin-bottom: 0;
+}
+
+.highlight-pain {
+  font-weight: 700;
+  font-size: 1.1em;
+}
+
+.highlight-trend {
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.pain-chart-container {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.pain-chart-container h4 {
+  color: #2c3e50;
+  font-size: 1.1rem;
+  margin: 0 0 1rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Case AI Summary */
+.case-ai-summary {
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  color: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-top: 1.5rem;
+  box-shadow: 0 4px 12px rgba(17, 153, 142, 0.3);
+}
+
+.ai-summary-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.ai-summary-header svg {
+  font-size: 1.5rem;
+}
+
+.ai-summary-header h4 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.ai-summary-content p {
+  margin: 0 0 1rem 0;
+  line-height: 1.7;
+  font-size: 1rem;
+}
+
+.ai-summary-meta {
+  font-size: 0.85rem;
+  opacity: 0.9;
+  font-style: italic;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+}
+
 .no-pain-entries {
   text-align: center;
   padding: 4rem 2rem;

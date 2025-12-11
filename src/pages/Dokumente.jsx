@@ -1,7 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
-import { FaFileAlt, FaSyringe, FaXRay, FaFileMedical, FaPills, FaHeartbeat, FaTint, FaStethoscope, FaTimes, FaEllipsisV, FaEye, FaEdit, FaTrash, FaList, FaCalendarAlt } from 'react-icons/fa';
+import { FaFileAlt, FaSyringe, FaXRay, FaFileMedical, FaPills, FaHeartbeat, FaTint, FaStethoscope, FaTimes, FaEllipsisV, FaEye, FaEdit, FaTrash, FaList, FaCalendarAlt, FaCamera, FaImage } from 'react-icons/fa';
 import { sampleDocuments, detectDocumentCategory, getDefaultDate } from '../data/sampleDocuments';
 import './Dokumente.css';
 
@@ -44,6 +44,7 @@ function Dokumente() {
   const { currentUser, addDocument, updateDocument, deleteDocument } = useUser();
   const [searchParams] = useSearchParams();
   const kategorie = searchParams.get('kategorie');
+  const addMenuRef = useRef(null);
 
   // View Mode State
   const [viewMode, setViewMode] = useState('list'); // 'list' or 'timeline'
@@ -54,6 +55,12 @@ function Dokumente() {
   const [selectedSampleDoc, setSelectedSampleDoc] = useState('');
   const [autoDate, setAutoDate] = useState('');
   const [autoCategory, setAutoCategory] = useState('');
+
+  // Foto Upload State (Simulation)
+  const [uploadedPhotos, setUploadedPhotos] = useState([]);
+
+  // Dropdown Menu State für "+ Dokument hinzufügen"
+  const [showAddMenu, setShowAddMenu] = useState(false);
 
   // 3-Punkte-Menü State
   const [openMenuId, setOpenMenuId] = useState(null);
@@ -94,6 +101,16 @@ function Dokumente() {
     setSelectedSampleDoc('');
     setAutoDate(getDefaultDate());
     setAutoCategory('Vorsorge');
+    setShowAddMenu(false);
+  };
+
+  const openModalWithPhotos = () => {
+    setIsModalOpen(true);
+    setCustomTitle('');
+    setSelectedSampleDoc('');
+    setAutoDate(getDefaultDate());
+    setAutoCategory('Vorsorge');
+    setShowAddMenu(false);
   };
 
   const closeModal = () => {
@@ -102,7 +119,53 @@ function Dokumente() {
     setSelectedSampleDoc('');
     setAutoDate('');
     setAutoCategory('');
+    setUploadedPhotos([]);
   };
+
+  // Foto Upload Funktionen (Simulation)
+  const handlePhotoUpload = (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length === 0) return;
+
+    const photoUrls = files.map(file => ({
+      name: file.name,
+      url: URL.createObjectURL(file),
+      size: (file.size / 1024).toFixed(1) + ' KB'
+    }));
+    setUploadedPhotos(photoUrls);
+    openModalWithPhotos();
+  };
+
+  const handlePhotoUploadInModal = (e) => {
+    const files = Array.from(e.target.files);
+    const photoUrls = files.map(file => ({
+      name: file.name,
+      url: URL.createObjectURL(file),
+      size: (file.size / 1024).toFixed(1) + ' KB'
+    }));
+    setUploadedPhotos(prev => [...prev, ...photoUrls]);
+  };
+
+  const removePhoto = (index) => {
+    setUploadedPhotos(prev => prev.filter((_, i) => i !== index));
+  };
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (addMenuRef.current && !addMenuRef.current.contains(event.target)) {
+        setShowAddMenu(false);
+      }
+    };
+
+    if (showAddMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showAddMenu]);
 
   const handleSampleDocChange = (docIndex) => {
     setSelectedSampleDoc(docIndex);
@@ -145,8 +208,28 @@ function Dokumente() {
       return;
     }
 
+    // Foto-Only Modus: Wenn Fotos hochgeladen, aber kein Probe-Dokument gewählt
+    if (uploadedPhotos.length > 0 && selectedSampleDoc === '') {
+      const newDocument = {
+        id: `new-${Date.now()}`,
+        title: customTitle,
+        category: autoCategory,
+        date: autoDate,
+        type: 'Foto-Upload',
+        status: 'aktuell',
+        thumbnail: 'checkup',
+        tags: ['Foto', 'Upload'],
+        photos: uploadedPhotos.map(p => p.url)
+      };
+
+      addDocument(newDocument);
+      closeModal();
+      return;
+    }
+
+    // Probe-Dokument Modus
     if (selectedSampleDoc === '') {
-      alert('Bitte wählen Sie ein Probe-Dokument aus.');
+      alert('Bitte wählen Sie ein Probe-Dokument aus oder laden Sie Fotos hoch.');
       return;
     }
 
@@ -158,7 +241,7 @@ function Dokumente() {
       return;
     }
 
-    // Neues Dokument erstellen
+    // Neues Dokument erstellen (mit oder ohne Fotos)
     const newDocument = {
       id: `new-${Date.now()}`,
       title: customTitle,
@@ -167,7 +250,8 @@ function Dokumente() {
       type: selectedDoc.type,
       status: 'aktuell',
       thumbnail: selectedDoc.thumbnail,
-      tags: selectedDoc.tags
+      tags: selectedDoc.tags,
+      ...(uploadedPhotos.length > 0 && { photos: uploadedPhotos.map(p => p.url) })
     };
 
     // Dokument zum User hinzufügen (über Context)
@@ -282,7 +366,48 @@ function Dokumente() {
             }
           </p>
         </div>
-        <button className="add-document-btn" onClick={openModal}>+ Dokument hinzufügen</button>
+
+        {/* Add Document Button mit Dropdown */}
+        <div className="add-document-container" ref={addMenuRef}>
+          <button
+            className="add-document-btn"
+            onClick={() => setShowAddMenu(!showAddMenu)}
+          >
+            + Dokument hinzufügen
+          </button>
+
+          {showAddMenu && (
+            <div className="add-document-dropdown">
+              <label className="dropdown-item">
+                <FaCamera />
+                <span>Foto aufnehmen</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
+                  onChange={handlePhotoUpload}
+                  style={{ display: 'none' }}
+                  multiple
+                />
+              </label>
+              <label className="dropdown-item">
+                <FaImage />
+                <span>Aus Galerie</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handlePhotoUpload}
+                  style={{ display: 'none' }}
+                  multiple
+                />
+              </label>
+              <button className="dropdown-item" onClick={openModal}>
+                <FaFileAlt />
+                <span>Probe-Dokument wählen</span>
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* View Mode Toggle */}
@@ -328,7 +453,9 @@ function Dokumente() {
 
               {/* Probe-Dokument Auswahl */}
               <div className="form-group">
-                <label htmlFor="sample-doc">Dokument auswählen *</label>
+                <label htmlFor="sample-doc">
+                  Dokument auswählen {uploadedPhotos.length > 0 ? '(optional)' : '*'}
+                </label>
                 <select
                   id="sample-doc"
                   value={selectedSampleDoc}
@@ -347,6 +474,64 @@ function Dokumente() {
                     📄 {sampleDocuments[currentUser.id][parseInt(selectedSampleDoc)].description}
                   </p>
                 )}
+                {uploadedPhotos.length > 0 && selectedSampleDoc === '' && (
+                  <p className="form-hint simulation-hint">
+                    💡 Sie können das Dokument nur mit Fotos erstellen oder zusätzlich ein Probe-Dokument wählen
+                  </p>
+                )}
+              </div>
+
+              {/* Foto Upload (Simulation) */}
+              <div className="form-group photo-upload-section">
+                <label>Weitere Fotos hinzufügen (optional)</label>
+                <div className="photo-upload-buttons">
+                  <label className="btn-upload-photo">
+                    <FaCamera /> Foto aufnehmen
+                    <input
+                      type="file"
+                      accept="image/*"
+                      capture="environment"
+                      onChange={handlePhotoUploadInModal}
+                      style={{ display: 'none' }}
+                      multiple
+                    />
+                  </label>
+                  <label className="btn-upload-photo secondary">
+                    <FaImage /> Aus Galerie
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handlePhotoUploadInModal}
+                      style={{ display: 'none' }}
+                      multiple
+                    />
+                  </label>
+                </div>
+
+                {/* Foto Vorschau */}
+                {uploadedPhotos.length > 0 && (
+                  <div className="photo-preview-grid">
+                    {uploadedPhotos.map((photo, index) => (
+                      <div key={index} className="photo-preview-item">
+                        <img src={photo.url} alt={photo.name} />
+                        <button
+                          type="button"
+                          className="photo-remove-btn"
+                          onClick={() => removePhoto(index)}
+                        >
+                          <FaTimes />
+                        </button>
+                        <div className="photo-info">
+                          <span className="photo-name">{photo.name}</span>
+                          <span className="photo-size">{photo.size}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <p className="form-hint simulation-hint">
+                  ℹ️ Simulation: Fotos werden nur angezeigt, nicht gespeichert
+                </p>
               </div>
 
               {/* Auto-Fill Felder (nur anzeigen) */}

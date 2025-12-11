@@ -105,6 +105,42 @@ export const UserProvider = ({ children }) => {
     }));
   };
 
+  const deletePainDiaryEntry = (caseId, entryIndex) => {
+    setUsers(prevUsers => ({
+      ...prevUsers,
+      [currentUserId]: {
+        ...prevUsers[currentUserId],
+        cases: prevUsers[currentUserId].cases.map(c =>
+          c.id === caseId ? {
+            ...c,
+            painDiary: c.painDiary.filter((_, index) => index !== entryIndex)
+          } : c
+        )
+      }
+    }));
+  };
+
+  // Prevention Management Functions
+  const addPreventionItem = (newItem) => {
+    setUsers(prevUsers => ({
+      ...prevUsers,
+      [currentUserId]: {
+        ...prevUsers[currentUserId],
+        preventionData: [...prevUsers[currentUserId].preventionData, newItem]
+      }
+    }));
+  };
+
+  const deletePreventionItem = (itemIndex) => {
+    setUsers(prevUsers => ({
+      ...prevUsers,
+      [currentUserId]: {
+        ...prevUsers[currentUserId],
+        preventionData: prevUsers[currentUserId].preventionData.filter((_, index) => index !== itemIndex)
+      }
+    }));
+  };
+
   return (
     <UserContext.Provider value={{
       currentUser,
@@ -117,7 +153,10 @@ export const UserProvider = ({ children }) => {
       addCase,
       updateCase,
       deleteCase,
-      addPainDiaryEntry
+      addPainDiaryEntry,
+      deletePainDiaryEntry,
+      addPreventionItem,
+      deletePreventionItem
     }}>
       {children}
     </UserContext.Provider>

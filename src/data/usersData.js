@@ -200,12 +200,14 @@ export const usersData = {
 
     // Prävention & Vorsorge
     preventionData: [
-      { name: 'Tetanus-Impfung', category: 'Impfungen', status: 'aktuell', lastDate: '2024-08-10', nextDue: '2034-08-10', daysUntilDue: 3545, interval: 'Alle 10 Jahre' },
-      { name: 'FSME-Impfung', category: 'Impfungen', status: 'aktuell', lastDate: '2023-05-15', nextDue: '2026-05-15', daysUntilDue: 525, interval: 'Alle 3 Jahre' },
-      { name: 'COVID-19 Booster', category: 'Impfungen', status: 'aktuell', lastDate: '2024-01-20', nextDue: '2025-01-20', daysUntilDue: 44, interval: 'Jährlich' },
-      { name: 'Grippe-Impfung', category: 'Impfungen', status: 'empfohlen', lastDate: null, nextDue: '2025-10-01', daysUntilDue: 298, interval: 'Jährlich', description: 'Empfohlene Grippeimpfung für Herbst/Winter-Saison' },
-      { name: 'Gesundheits-Check-up', category: 'Vorsorge', status: 'aktuell', lastDate: '2024-11-20', nextDue: '2026-11-20', daysUntilDue: 734, interval: 'Alle 2 Jahre', description: 'Allgemeine Vorsorgeuntersuchung für unter 35-Jährige' },
-      { name: 'Hautkrebs-Screening', category: 'Screening', status: 'empfohlen', lastDate: null, nextDue: '2025-06-01', daysUntilDue: 175, interval: 'Alle 2 Jahre', description: 'Hautkrebsvorsorge besonders für sportlich Aktive empfohlen' }
+      { name: 'Tetanus-Impfung', category: 'Impfungen', status: 'aktuell', lastDate: '2024-08-10', nextDue: '2034-08-10', daysUntilDue: 3545, interval: 'Alle 10 Jahre', doctor: 'Dr. med. Andreas Keller', doctorPhone: '+41 44 456 78 90', doctorSpecialty: 'Allgemeinmedizin' },
+      { name: 'FSME-Impfung', category: 'Impfungen', status: 'aktuell', lastDate: '2023-05-15', nextDue: '2026-05-15', daysUntilDue: 525, interval: 'Alle 3 Jahre', doctor: 'Dr. med. Andreas Keller', doctorPhone: '+41 44 456 78 90', doctorSpecialty: 'Allgemeinmedizin' },
+      { name: 'COVID-19 Booster', category: 'Impfungen', status: 'aktuell', lastDate: '2024-01-20', nextDue: '2025-01-20', daysUntilDue: 44, interval: 'Jährlich', doctor: 'Dr. med. Andreas Keller', doctorPhone: '+41 44 456 78 90', doctorSpecialty: 'Allgemeinmedizin' },
+      { name: 'Grippe-Impfung', category: 'Impfungen', status: 'empfohlen', lastDate: null, nextDue: '2025-10-01', daysUntilDue: 298, interval: 'Jährlich', description: 'Empfohlene Grippeimpfung für Herbst/Winter-Saison', doctor: 'Dr. med. Andreas Keller', doctorPhone: '+41 44 456 78 90', doctorSpecialty: 'Allgemeinmedizin' },
+      { name: 'Gesundheits-Check-up', category: 'Vorsorge', status: 'aktuell', lastDate: '2024-11-20', nextDue: '2026-11-20', daysUntilDue: 734, interval: 'Alle 2 Jahre', description: 'Allgemeine Vorsorgeuntersuchung für unter 35-Jährige', doctor: 'Dr. med. Andreas Keller', doctorPhone: '+41 44 456 78 90', doctorSpecialty: 'Allgemeinmedizin' },
+      { name: 'Hautkrebs-Screening', category: 'Screening', status: 'empfohlen', lastDate: null, nextDue: '2025-06-01', daysUntilDue: 175, interval: 'Alle 2 Jahre', description: 'Hautkrebsvorsorge besonders für sportlich Aktive empfohlen', doctor: 'Dr. med. Sarah Müller', doctorPhone: '+41 44 789 23 45', doctorSpecialty: 'Dermatologie' },
+      { name: 'Zahnärztliche Kontrolle', category: 'Dental', status: 'überfällig', lastDate: '2023-10-15', nextDue: '2024-10-15', daysUntilDue: -50, interval: 'Jährlich', description: 'Routinemäßige zahnärztliche Kontrolle und professionelle Zahnreinigung', doctor: 'Dr. med. dent. Peter Zahn', doctorPhone: '+41 44 888 99 00', doctorSpecialty: 'Zahnmedizin' },
+      { name: 'Augenärztliche Untersuchung', category: 'Screening', status: 'empfohlen', lastDate: null, nextDue: '2025-03-01', daysUntilDue: 83, interval: 'Alle 2 Jahre', description: 'Sehtest und Augendruckmessung', doctor: 'Dr. med. Anna Blick', doctorPhone: '+41 44 777 66 55', doctorSpecialty: 'Ophthalmologie' }
     ],
 
     // Freigaben
