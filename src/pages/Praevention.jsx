@@ -18,7 +18,8 @@ function Praevention() {
   // Add Item State
   const [newItemName, setNewItemName] = useState('');
   const [newItemCategory, setNewItemCategory] = useState('Vorsorge');
-  const [newItemInterval, setNewItemInterval] = useState('');
+  const [newItemInterval, setNewItemInterval] = useState('1 Jahr');
+  const [newItemLastDate, setNewItemLastDate] = useState('');
   const [selectedDoctorId, setSelectedDoctorId] = useState('primary');
   const [newItemDoctor, setNewItemDoctor] = useState('');
   const [newItemDoctorPhone, setNewItemDoctorPhone] = useState('');
@@ -105,6 +106,39 @@ function Praevention() {
     }
   };
 
+  // Automatische Status-Berechnung basierend auf letztem Datum + Intervall
+  const calculateStatus = (lastDate, interval) => {
+    if (!lastDate) {
+      return 'empfohlen'; // Noch nicht durchgeführt
+    }
+
+    const last = new Date(lastDate);
+    const today = new Date();
+    const diffDays = Math.floor((today - last) / (1000 * 60 * 60 * 24));
+
+    // Intervall in Tage umrechnen
+    const intervalMap = {
+      '3 Monate': 90,
+      '6 Monate': 180,
+      '1 Jahr': 365,
+      '2 Jahre': 730,
+      '3 Jahre': 1095,
+      '5 Jahre': 1825,
+      '10 Jahre': 3650
+    };
+
+    const intervalDays = intervalMap[interval] || 365;
+    const warningThreshold = intervalDays * 0.9; // 90% des Intervalls = "bald fällig"
+
+    if (diffDays > intervalDays) {
+      return 'überfällig';
+    } else if (diffDays > warningThreshold) {
+      return 'bald_fällig';
+    } else {
+      return 'aktuell';
+    }
+  };
+
   const getCategoryIcon = (category) => {
     switch(category) {
       case 'Impfungen': return <FaSyringe />;
@@ -139,7 +173,8 @@ function Praevention() {
     setShowAddItemModal(true);
     setNewItemName('');
     setNewItemCategory('Vorsorge');
-    setNewItemInterval('');
+    setNewItemInterval('1 Jahr');
+    setNewItemLastDate('');
     setSelectedDoctorId('primary');
     setNewItemDoctor(currentUser.primaryDoctor.name);
     setNewItemDoctorPhone(currentUser.primaryDoctor.phone);
@@ -152,13 +187,39 @@ function Praevention() {
       return;
     }
 
+    // Status automatisch berechnen
+    const calculatedStatus = calculateStatus(newItemLastDate, newItemInterval);
+
+    // Nächstes Fälligkeitsdatum berechnen
+    let nextDue = null;
+    let daysUntilDue = null;
+    if (newItemLastDate) {
+      const last = new Date(newItemLastDate);
+      const intervalMap = {
+        '3 Monate': 90,
+        '6 Monate': 180,
+        '1 Jahr': 365,
+        '2 Jahre': 730,
+        '3 Jahre': 1095,
+        '5 Jahre': 1825,
+        '10 Jahre': 3650
+      };
+      const intervalDays = intervalMap[newItemInterval] || 365;
+      const next = new Date(last);
+      next.setDate(next.getDate() + intervalDays);
+      nextDue = next.toISOString().split('T')[0];
+
+      const today = new Date();
+      daysUntilDue = Math.floor((next - today) / (1000 * 60 * 60 * 24));
+    }
+
     const newItem = {
       name: newItemName,
       category: newItemCategory,
-      status: 'empfohlen',
-      lastDate: null,
-      nextDue: null,
-      daysUntilDue: null,
+      status: calculatedStatus,
+      lastDate: newItemLastDate || null,
+      nextDue: nextDue,
+      daysUntilDue: daysUntilDue,
       interval: newItemInterval,
       description: 'Benutzerdefiniertes Präventions-Item',
       doctor: newItemDoctor || null,
@@ -168,6 +229,13 @@ function Praevention() {
 
     addPreventionItem(newItem);
     setShowAddItemModal(false);
+
+    // Reset Form
+    setNewItemName('');
+    setNewItemCategory('Vorsorge');
+    setNewItemInterval('1 Jahr');
+    setNewItemLastDate('');
+    setSelectedDoctorId('primary');
   };
 
   const handleDeleteItem = (index) => {
@@ -521,13 +589,31 @@ function Praevention() {
 
               <div className="form-group">
                 <label>Intervall *</label>
-                <input
-                  type="text"
-                  className="form-input"
-                  placeholder="z.B. Jährlich, Alle 6 Monate, Alle 2 Jahre"
+                <select
+                  className="form-select"
                   value={newItemInterval}
                   onChange={(e) => setNewItemInterval(e.target.value)}
+                >
+                  <option value="3 Monate">Alle 3 Monate</option>
+                  <option value="6 Monate">Alle 6 Monate</option>
+                  <option value="1 Jahr">Jährlich</option>
+                  <option value="2 Jahre">Alle 2 Jahre</option>
+                  <option value="3 Jahre">Alle 3 Jahre</option>
+                  <option value="5 Jahre">Alle 5 Jahre</option>
+                  <option value="10 Jahre">Alle 10 Jahre</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label>Letztes Datum (optional)</label>
+                <input
+                  type="date"
+                  className="form-input"
+                  value={newItemLastDate}
+                  onChange={(e) => setNewItemLastDate(e.target.value)}
+                  max={new Date().toISOString().split('T')[0]}
                 />
+                <small className="form-hint">Wann wurde dies zuletzt durchgeführt? Leer = noch nicht durchgeführt</small>
               </div>
 
               <div className="form-group">
@@ -545,41 +631,6 @@ function Praevention() {
                   ))}
                 </select>
               </div>
-
-              {selectedDoctorId !== 'none' && (
-                <>
-                  <div className="form-group">
-                    <label>Arzt-Name (automatisch ausgefüllt)</label>
-                    <input
-                      type="text"
-                      className="form-input auto-filled"
-                      value={newItemDoctor}
-                      readOnly
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label>Telefonnummer (automatisch ausgefüllt)</label>
-                    <input
-                      type="tel"
-                      className="form-input auto-filled"
-                      placeholder="Keine Telefonnummer hinterlegt"
-                      value={newItemDoctorPhone}
-                      readOnly
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label>Fachgebiet (automatisch ausgefüllt)</label>
-                    <input
-                      type="text"
-                      className="form-input auto-filled"
-                      value={newItemDoctorSpecialty}
-                      readOnly
-                    />
-                  </div>
-                </>
-              )}
 
               {selectedDoctorId === 'none' && (
                 <div className="no-doctor-warning">
