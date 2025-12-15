@@ -20,6 +20,27 @@ export const usersData = {
     height: "185 cm",
     weight: "78 kg",
 
+    // Persona-spezifische Default-Einstellungen (20 Jahre, sportlich, gesund)
+    defaultSettings: {
+      fontSize: 'mittel',
+      highContrast: false,
+      language: 'de',
+      notifications: {
+        email: true,
+        push: false,
+        appointments: true,
+        labResults: true,
+        medications: false
+      },
+      dataSharing: {
+        research: false,
+        quality: true,
+        statistics: false
+      },
+      twoFactorAuth: false,
+      autoLogout: '30'
+    },
+
     insuranceData: {
       healthInsurance: "Swica Versicherung",
       insuranceNumber: "90012345679",
@@ -265,6 +286,27 @@ export const usersData = {
     bloodType: "A+",
     height: "168 cm",
     weight: "72 kg",
+
+    // Persona-spezifische Default-Einstellungen (30 Jahre, schwanger, braucht alle Benachrichtigungen)
+    defaultSettings: {
+      fontSize: 'mittel',
+      highContrast: false,
+      language: 'de',
+      notifications: {
+        email: true,
+        push: true,
+        appointments: true,
+        labResults: true,
+        medications: true
+      },
+      dataSharing: {
+        research: true,
+        quality: true,
+        statistics: false
+      },
+      twoFactorAuth: true,
+      autoLogout: '30'
+    },
 
     insuranceData: {
       healthInsurance: "Helsana Versicherung",
@@ -574,6 +616,27 @@ export const usersData = {
     bloodType: "B+",
     height: "182 cm",
     weight: "88 kg",
+
+    // Persona-spezifische Default-Einstellungen (50 Jahre, Geschäftsmann, braucht größere Schrift)
+    defaultSettings: {
+      fontSize: 'gross',
+      highContrast: false,
+      language: 'de',
+      notifications: {
+        email: true,
+        push: false,
+        appointments: true,
+        labResults: true,
+        medications: true
+      },
+      dataSharing: {
+        research: false,
+        quality: true,
+        statistics: false
+      },
+      twoFactorAuth: true,
+      autoLogout: '15'
+    },
 
     insuranceData: {
       healthInsurance: "CSS Versicherung",
@@ -934,6 +997,27 @@ export const usersData = {
     bloodType: "A-",
     height: "158 cm",
     weight: "58 kg",
+
+    // Persona-spezifische Default-Einstellungen (90 Jahre, chronisch krank, braucht maximale Barrierefreiheit)
+    defaultSettings: {
+      fontSize: 'sehr-gross',
+      highContrast: true,
+      language: 'de',
+      notifications: {
+        email: true,
+        push: true,
+        appointments: true,
+        labResults: true,
+        medications: true
+      },
+      dataSharing: {
+        research: false,
+        quality: true,
+        statistics: false
+      },
+      twoFactorAuth: false,
+      autoLogout: '60'
+    },
 
     insuranceData: {
       healthInsurance: "Swica Versicherung",

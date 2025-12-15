@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import { usersData } from '../data/usersData';
 
 const UserContext = createContext();
@@ -15,11 +15,72 @@ export const UserProvider = ({ children }) => {
   const [currentUserId, setCurrentUserId] = useState('luca-frei');
   const [users, setUsers] = useState(usersData);
 
+  // Settings State - startet mit den Defaults des ersten Users
+  const [settings, setSettings] = useState(() => {
+    // Versuche Settings aus localStorage zu laden, ansonsten Default
+    const savedSettings = localStorage.getItem(`settings-luca-frei`);
+    return savedSettings ? JSON.parse(savedSettings) : usersData['luca-frei'].defaultSettings;
+  });
+
   const currentUser = users[currentUserId];
 
+  // Beim User-Wechsel: Lade Settings aus localStorage oder Default
   const switchUser = (userId) => {
     setCurrentUserId(userId);
+    const savedSettings = localStorage.getItem(`settings-${userId}`);
+    const newSettings = savedSettings ? JSON.parse(savedSettings) : users[userId].defaultSettings;
+    setSettings(newSettings);
+
+    // Wende Font-Size sofort an
+    const fontSizeMap = {
+      'klein': '14px',
+      'mittel': '16px',
+      'gross': '18px',
+      'sehr-gross': '20px'
+    };
+    document.documentElement.style.fontSize = fontSizeMap[newSettings.fontSize] || '16px';
   };
+
+  // Update Settings und speichere in localStorage
+  const updateSettings = (newSettings) => {
+    setSettings(newSettings);
+    localStorage.setItem(`settings-${currentUserId}`, JSON.stringify(newSettings));
+
+    // Wende Font-Size sofort an
+    const fontSizeMap = {
+      'klein': '14px',
+      'mittel': '16px',
+      'gross': '18px',
+      'sehr-gross': '20px'
+    };
+    document.documentElement.style.fontSize = fontSizeMap[newSettings.fontSize] || '16px';
+  };
+
+  // Reset Settings auf User-Defaults
+  const resetSettingsToDefault = () => {
+    const defaultSettings = currentUser.defaultSettings;
+    setSettings(defaultSettings);
+    localStorage.setItem(`settings-${currentUserId}`, JSON.stringify(defaultSettings));
+
+    const fontSizeMap = {
+      'klein': '14px',
+      'mittel': '16px',
+      'gross': '18px',
+      'sehr-gross': '20px'
+    };
+    document.documentElement.style.fontSize = fontSizeMap[defaultSettings.fontSize] || '16px';
+  };
+
+  // Initial Font-Size setzen
+  useEffect(() => {
+    const fontSizeMap = {
+      'klein': '14px',
+      'mittel': '16px',
+      'gross': '18px',
+      'sehr-gross': '20px'
+    };
+    document.documentElement.style.fontSize = fontSizeMap[settings.fontSize] || '16px';
+  }, []);
 
   const getAllUsers = () => {
     return Object.values(users);
@@ -156,7 +217,11 @@ export const UserProvider = ({ children }) => {
       addPainDiaryEntry,
       deletePainDiaryEntry,
       addPreventionItem,
-      deletePreventionItem
+      deletePreventionItem,
+      // Settings Management
+      settings,
+      updateSettings,
+      resetSettingsToDefault
     }}>
       {children}
     </UserContext.Provider>

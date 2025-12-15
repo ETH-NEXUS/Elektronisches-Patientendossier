@@ -14,6 +14,39 @@
   font-size: 1.1rem;
 }
 
+.settings-hint {
+  color: #3498db;
+  font-size: 0.95rem;
+  margin-top: 0.5rem;
+  padding: 0.75rem 1rem;
+  background-color: #e8f4f8;
+  border-radius: 6px;
+  border-left: 4px solid #3498db;
+}
+
+.settings-hint strong {
+  color: #2c3e50;
+}
+
+.btn-reset-settings {
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  background-color: white;
+  color: #3498db;
+  border: 2px solid #3498db;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-reset-settings:hover {
+  background-color: #3498db;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+}
+
 /* Grid Layout */
 .settings-grid {
   display: grid;

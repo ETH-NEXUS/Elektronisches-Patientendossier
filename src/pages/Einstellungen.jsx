@@ -1,25 +1,9 @@
 import './Pages.css';
 import './Einstellungen.css';
-import { useState } from 'react';
+import { useUser } from '../context/UserContext';
 
 function Einstellungen() {
-  const [fontSize, setFontSize] = useState('mittel');
-  const [highContrast, setHighContrast] = useState(false);
-  const [language, setLanguage] = useState('de');
-  const [notifications, setNotifications] = useState({
-    email: true,
-    push: false,
-    appointments: true,
-    labResults: true,
-    medications: true
-  });
-  const [dataSharing, setDataSharing] = useState({
-    research: false,
-    quality: true,
-    statistics: false
-  });
-  const [twoFactorAuth, setTwoFactorAuth] = useState(false);
-  const [autoLogout, setAutoLogout] = useState('30');
+  const { settings, updateSettings, resetSettingsToDefault, currentUser } = useUser();
 
   const fontSizes = [
     { value: 'klein', label: 'Klein', size: '14px' },
@@ -36,17 +20,37 @@ function Einstellungen() {
   ];
 
   const handleFontSizeChange = (size) => {
-    setFontSize(size);
-    // In production würde dies die root font-size ändern
-    document.documentElement.style.fontSize = fontSizes.find(f => f.value === size)?.size || '16px';
+    updateSettings({ ...settings, fontSize: size });
   };
 
   const handleNotificationChange = (key) => {
-    setNotifications({ ...notifications, [key]: !notifications[key] });
+    updateSettings({
+      ...settings,
+      notifications: { ...settings.notifications, [key]: !settings.notifications[key] }
+    });
   };
 
   const handleDataSharingChange = (key) => {
-    setDataSharing({ ...dataSharing, [key]: !dataSharing[key] });
+    updateSettings({
+      ...settings,
+      dataSharing: { ...settings.dataSharing, [key]: !settings.dataSharing[key] }
+    });
+  };
+
+  const handleHighContrastChange = (checked) => {
+    updateSettings({ ...settings, highContrast: checked });
+  };
+
+  const handleLanguageChange = (lang) => {
+    updateSettings({ ...settings, language: lang });
+  };
+
+  const handleTwoFactorAuthChange = (checked) => {
+    updateSettings({ ...settings, twoFactorAuth: checked });
+  };
+
+  const handleAutoLogoutChange = (value) => {
+    updateSettings({ ...settings, autoLogout: value });
   };
 
   const handleExportData = (format) => {
@@ -64,6 +68,12 @@ function Einstellungen() {
       <div className="settings-header">
         <h1>Einstellungen</h1>
         <p>Passen Sie das EPD an Ihre Bedürfnisse an</p>
+        <p className="settings-hint">
+          Aktuelles Profil: <strong>{currentUser.name}</strong> - Diese Einstellungen sind personalisiert
+        </p>
+        <button className="btn-reset-settings" onClick={resetSettingsToDefault}>
+          Auf Standard zurücksetzen
+        </button>
       </div>
 
       <div className="settings-grid">
@@ -81,7 +91,7 @@ function Einstellungen() {
               {fontSizes.map(size => (
                 <button
                   key={size.value}
-                  className={`font-size-btn ${fontSize === size.value ? 'active' : ''}`}
+                  className={`font-size-btn ${settings.fontSize === size.value ? 'active' : ''}`}
                   onClick={() => handleFontSizeChange(size.value)}
                   style={{ fontSize: size.size }}
                 >
@@ -99,8 +109,8 @@ function Einstellungen() {
             <label className="toggle-switch">
               <input
                 type="checkbox"
-                checked={highContrast}
-                onChange={(e) => setHighContrast(e.target.checked)}
+                checked={settings.highContrast}
+                onChange={(e) => handleHighContrastChange(e.target.checked)}
               />
               <span className="toggle-slider"></span>
             </label>
@@ -116,7 +126,7 @@ function Einstellungen() {
               <strong>Anzeigesprache</strong>
               <span className="setting-description">Wählen Sie Ihre bevorzugte Sprache</span>
             </div>
-            <select value={language} onChange={(e) => setLanguage(e.target.value)} className="setting-select">
+            <select value={settings.language} onChange={(e) => handleLanguageChange(e.target.value)} className="setting-select">
               {languages.map(lang => (
                 <option key={lang.value} value={lang.value}>{lang.label}</option>
               ))}
@@ -148,7 +158,7 @@ function Einstellungen() {
             <label className="toggle-switch">
               <input
                 type="checkbox"
-                checked={notifications.email}
+                checked={settings.notifications.email}
                 onChange={() => handleNotificationChange('email')}
               />
               <span className="toggle-slider"></span>
@@ -163,7 +173,7 @@ function Einstellungen() {
             <label className="toggle-switch">
               <input
                 type="checkbox"
-                checked={notifications.push}
+                checked={settings.notifications.push}
                 onChange={() => handleNotificationChange('push')}
               />
               <span className="toggle-slider"></span>
@@ -178,7 +188,7 @@ function Einstellungen() {
             <label className="toggle-switch">
               <input
                 type="checkbox"
-                checked={notifications.appointments}
+                checked={settings.notifications.appointments}
                 onChange={() => handleNotificationChange('appointments')}
               />
               <span className="toggle-slider"></span>
@@ -193,7 +203,7 @@ function Einstellungen() {
             <label className="toggle-switch">
               <input
                 type="checkbox"
-                checked={notifications.labResults}
+                checked={settings.notifications.labResults}
                 onChange={() => handleNotificationChange('labResults')}
               />
               <span className="toggle-slider"></span>
@@ -208,7 +218,7 @@ function Einstellungen() {
             <label className="toggle-switch">
               <input
                 type="checkbox"
-                checked={notifications.medications}
+                checked={settings.notifications.medications}
                 onChange={() => handleNotificationChange('medications')}
               />
               <span className="toggle-slider"></span>
@@ -228,8 +238,8 @@ function Einstellungen() {
             <label className="toggle-switch">
               <input
                 type="checkbox"
-                checked={twoFactorAuth}
-                onChange={(e) => setTwoFactorAuth(e.target.checked)}
+                checked={settings.twoFactorAuth}
+                onChange={(e) => handleTwoFactorAuthChange(e.target.checked)}
               />
               <span className="toggle-slider"></span>
             </label>
@@ -240,7 +250,7 @@ function Einstellungen() {
               <strong>Automatischer Logout</strong>
               <span className="setting-description">Nach Inaktivität automatisch abmelden</span>
             </div>
-            <select value={autoLogout} onChange={(e) => setAutoLogout(e.target.value)} className="setting-select">
+            <select value={settings.autoLogout} onChange={(e) => handleAutoLogoutChange(e.target.value)} className="setting-select">
               <option value="15">15 Minuten</option>
               <option value="30">30 Minuten</option>
               <option value="60">1 Stunde</option>
@@ -256,7 +266,7 @@ function Einstellungen() {
             <label className="toggle-switch">
               <input
                 type="checkbox"
-                checked={dataSharing.research}
+                checked={settings.dataSharing.research}
                 onChange={() => handleDataSharingChange('research')}
               />
               <span className="toggle-slider"></span>
@@ -271,7 +281,7 @@ function Einstellungen() {
             <label className="toggle-switch">
               <input
                 type="checkbox"
-                checked={dataSharing.quality}
+                checked={settings.dataSharing.quality}
                 onChange={() => handleDataSharingChange('quality')}
               />
               <span className="toggle-slider"></span>
@@ -286,7 +296,7 @@ function Einstellungen() {
             <label className="toggle-switch">
               <input
                 type="checkbox"
-                checked={dataSharing.statistics}
+                checked={settings.dataSharing.statistics}
                 onChange={() => handleDataSharingChange('statistics')}
               />
               <span className="toggle-slider"></span>
