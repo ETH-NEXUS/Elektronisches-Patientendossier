@@ -617,62 +617,48 @@ function Dokumente() {
               {' '}{timelineData.totalWeeks && Math.floor(timelineData.totalWeeks / 52)} Jahre alt
               ({timelineData.totalWeeks} Wochen gelebt).
             </p>
-            <div className="timeline-legend">
-              <div className="legend-item">
-                <span className="legend-box past"></span>
-                <span>Vergangene Wochen</span>
-              </div>
-              <div className="legend-item">
-                <span className="legend-box current"></span>
-                <span>Aktuelle Woche</span>
-              </div>
-              <div className="legend-item">
-                <span className="legend-box future"></span>
-                <span>Zukünftige Wochen</span>
-              </div>
-              <div className="legend-item">
-                <span className="legend-box document"></span>
-                <span>Woche mit Dokumenten</span>
-              </div>
+          </div>
+
+          <div className="timeline-grid-wrapper">
+            {/* Jahresmarkierungen - links, vertikal */}
+            <div className="year-markers">
+              {Array.from({ length: Math.ceil(timelineData.expectedLifeWeeks / 52) + 1 }, (_, i) => i).filter(year => year % 10 === 0 || year === Math.floor(timelineData.totalWeeks / 52)).map((year) => {
+                const isCurrent = year === Math.floor(timelineData.totalWeeks / 52);
+                return (
+                  <div
+                    key={year}
+                    className={`year-marker ${isCurrent ? 'current-year' : ''}`}
+                    style={{ top: `${(year * 52 / timelineData.expectedLifeWeeks) * 100}%` }}
+                  >
+                    <div className="year-label">
+                      {year}J
+                      {isCurrent && <span className="year-indicator">◄ Jetzt</span>}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
-          </div>
 
-          <div className="week-grid">
-            {timelineData.weeks.map((week) => {
-              const hasDocuments = timelineData.documentsByWeek[week.weekNumber];
-              const docCount = hasDocuments ? hasDocuments.length : 0;
+            <div className="week-grid">
+              {timelineData.weeks.map((week) => {
+                const hasDocuments = timelineData.documentsByWeek[week.weekNumber];
+                const docCount = hasDocuments ? hasDocuments.length : 0;
 
-              return (
-                <div
-                  key={week.weekNumber}
-                  className={`week-box ${week.isPast ? 'past' : 'future'} ${week.isCurrent ? 'current' : ''} ${hasDocuments ? 'has-documents' : ''}`}
-                  title={hasDocuments ? `Woche ${week.weekNumber} (Jahr ${week.year}): ${docCount} Dokument${docCount > 1 ? 'e' : ''}` : `Woche ${week.weekNumber} (Jahr ${week.year})`}
-                  onClick={() => hasDocuments && setViewDocument(hasDocuments[0])}
-                  style={{
-                    backgroundColor: hasDocuments ? getThumbnailColor(hasDocuments[0].category) : undefined
-                  }}
-                >
-                  {docCount > 1 && <span className="doc-count">{docCount}</span>}
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Jahresmarkierungen - nur wichtige Meilensteine */}
-          <div className="year-markers">
-            {Array.from({ length: Math.ceil(timelineData.expectedLifeWeeks / 52) + 1 }, (_, i) => i).filter(year => year % 10 === 0 || year === Math.floor(timelineData.totalWeeks / 52)).map((year) => {
-              const isCurrent = year === Math.floor(timelineData.totalWeeks / 52);
-              return (
-                <div
-                  key={year}
-                  className={`year-marker ${isCurrent ? 'current-year' : ''}`}
-                  style={{ left: `${(year * 52 / timelineData.expectedLifeWeeks) * 100}%` }}
-                >
-                  <div className="year-label">{year}J</div>
-                  {isCurrent && <div className="year-indicator">▼ Jetzt</div>}
-                </div>
-              );
-            })}
+                return (
+                  <div
+                    key={week.weekNumber}
+                    className={`week-box ${week.isPast ? 'past' : 'future'} ${week.isCurrent ? 'current' : ''} ${hasDocuments ? 'has-documents' : ''}`}
+                    title={hasDocuments ? `Woche ${week.weekNumber} (Jahr ${week.year}): ${docCount} Dokument${docCount > 1 ? 'e' : ''}` : `Woche ${week.weekNumber} (Jahr ${week.year})`}
+                    onClick={() => hasDocuments && setViewDocument(hasDocuments[0])}
+                    style={{
+                      backgroundColor: hasDocuments ? getThumbnailColor(hasDocuments[0].category) : undefined
+                    }}
+                  >
+                    {docCount > 1 && <span className="doc-count">{docCount}</span>}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       )}

@@ -721,6 +721,7 @@
 }
 
 .week-grid {
+  flex: 1;
   display: grid;
   grid-template-columns: repeat(52, 1fr);
   gap: 2px;
@@ -787,21 +788,29 @@
   z-index: 2;
 }
 
+/* Timeline Grid Wrapper - enthält Achse + Grid */
+.timeline-grid-wrapper {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 2rem;
+  position: relative;
+}
+
+/* Jahr-Markierungen - vertikal links */
 .year-markers {
   display: flex;
-  margin-top: 1rem;
-  padding: 0 1rem;
+  flex-direction: column;
   position: relative;
-  height: 40px;
+  width: 80px;
+  flex-shrink: 0;
 }
 
 .year-marker {
   position: absolute;
-  transform: translateX(-50%);
+  transform: translateY(-50%);
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.5rem;
 }
 
 .year-label {
@@ -813,6 +822,9 @@
   border-radius: 4px;
   border: 1px solid #ddd;
   white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .year-marker.current-year .year-label {
@@ -825,10 +837,13 @@
 
 .year-indicator {
   font-size: 0.75rem;
-  color: #ff6600;
+  color: white;
   font-weight: 700;
   white-space: nowrap;
-  animation: pulse 2s ease-in-out infinite;
+}
+
+.year-marker:not(.current-year) .year-indicator {
+  display: none;
 }
 
 @keyframes pulse {
@@ -860,6 +875,23 @@
     padding: 1rem;
   }
 
+  .timeline-grid-wrapper {
+    gap: 0.75rem;
+  }
+
+  .year-markers {
+    width: 50px;
+  }
+
+  .year-label {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.4rem;
+  }
+
+  .year-indicator {
+    display: none !important;
+  }
+
   .timeline-legend {
     gap: 1rem;
   }
@@ -882,10 +914,6 @@
     font-size: 6px;
     width: 12px;
     height: 12px;
-  }
-
-  .year-marker {
-    font-size: 0.65rem;
   }
 
   .view-toggle {
