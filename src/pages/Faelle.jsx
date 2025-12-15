@@ -1,11 +1,12 @@
 import { useState, useMemo } from 'react';
 import { useUser } from '../context/UserContext';
-import { FaPlus, FaFolderOpen, FaCalendarAlt, FaUserMd, FaEllipsisV, FaEdit, FaTrash, FaFileAlt, FaHeartbeat, FaChartLine } from 'react-icons/fa';
+import { FaPlus, FaFolderOpen, FaCalendarAlt, FaUserMd, FaEllipsisV, FaEdit, FaTrash, FaFileAlt, FaHeartbeat, FaChartLine, FaSearch, FaTimes } from 'react-icons/fa';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
 import './Faelle.css';
 
 function Faelle() {
   const { currentUser, addCase, updateCase, deleteCase, addPainDiaryEntry, deletePainDiaryEntry } = useUser();
+  const [searchQuery, setSearchQuery] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
   const [openMenuId, setOpenMenuId] = useState(null);
   const [viewCase, setViewCase] = useState(null);
@@ -156,8 +157,23 @@ function Faelle() {
     }
   };
 
-  // Fälle des aktuellen Users
-  const cases = currentUser.cases || [];
+  // Fälle des aktuellen Users - gefiltert nach Suchbegriff
+  const cases = useMemo(() => {
+    let userCases = currentUser.cases || [];
+
+    // Filter nach Suchbegriff
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      userCases = userCases.filter(caseItem =>
+        caseItem.title.toLowerCase().includes(query) ||
+        caseItem.category.toLowerCase().includes(query) ||
+        caseItem.doctor.toLowerCase().includes(query) ||
+        caseItem.status.toLowerCase().includes(query)
+      );
+    }
+
+    return userCases;
+  }, [currentUser, searchQuery]);
 
   // Statistiken berechnen
   const stats = {
@@ -177,6 +193,25 @@ function Faelle() {
         <button className="add-fall-btn" onClick={handleAddCase}>
           <FaPlus /> Fall erstellen
         </button>
+      </div>
+
+      {/* Suchleiste */}
+      <div className="search-bar-container">
+        <div className="search-bar">
+          <FaSearch className="search-icon" />
+          <input
+            type="text"
+            placeholder="Fälle durchsuchen (Titel, Kategorie, Arzt, Status)..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="search-input"
+          />
+          {searchQuery && (
+            <button className="search-clear-btn" onClick={() => setSearchQuery('')}>
+              <FaTimes />
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Summary Section */}

@@ -1,7 +1,7 @@
 import { useMemo, useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
-import { FaFileAlt, FaSyringe, FaXRay, FaFileMedical, FaPills, FaHeartbeat, FaTint, FaStethoscope, FaTimes, FaEllipsisV, FaEye, FaEdit, FaTrash, FaList, FaCalendarAlt, FaCamera, FaImage } from 'react-icons/fa';
+import { FaFileAlt, FaSyringe, FaXRay, FaFileMedical, FaPills, FaHeartbeat, FaTint, FaStethoscope, FaTimes, FaEllipsisV, FaEye, FaEdit, FaTrash, FaList, FaCalendarAlt, FaCamera, FaImage, FaSearch } from 'react-icons/fa';
 import { sampleDocuments, detectDocumentCategory, getDefaultDate } from '../data/sampleDocuments';
 import './Dokumente.css';
 
@@ -49,6 +49,9 @@ function Dokumente() {
   // View Mode State
   const [viewMode, setViewMode] = useState('list'); // 'list' or 'timeline'
 
+  // Search State
+  const [searchQuery, setSearchQuery] = useState('');
+
   // Modal State (Hinzufügen)
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [customTitle, setCustomTitle] = useState('');
@@ -74,19 +77,29 @@ function Dokumente() {
   const [editCategory, setEditCategory] = useState('');
 
   const filteredDocuments = useMemo(() => {
-    const userDocuments = currentUser.documents || [];
+    let userDocuments = currentUser.documents || [];
 
-    if (!kategorie) {
-      return userDocuments;
+    // Filter nach Kategorie (aus URL)
+    if (kategorie) {
+      const categoryName = categoryMapping[kategorie];
+      if (categoryName) {
+        userDocuments = userDocuments.filter(doc => doc.category === categoryName);
+      }
     }
 
-    const categoryName = categoryMapping[kategorie];
-    if (!categoryName) {
-      return userDocuments;
+    // Filter nach Suchbegriff
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      userDocuments = userDocuments.filter(doc =>
+        doc.title.toLowerCase().includes(query) ||
+        doc.category.toLowerCase().includes(query) ||
+        doc.type.toLowerCase().includes(query) ||
+        (doc.tags && doc.tags.some(tag => tag.toLowerCase().includes(query)))
+      );
     }
 
-    return userDocuments.filter(doc => doc.category === categoryName);
-  }, [kategorie, currentUser]);
+    return userDocuments;
+  }, [kategorie, currentUser, searchQuery]);
 
   const getTitle = () => {
     if (!kategorie) return 'Dokumente';
@@ -406,6 +419,25 @@ function Dokumente() {
                 <span>Probe-Dokument wählen</span>
               </button>
             </div>
+          )}
+        </div>
+      </div>
+
+      {/* Suchleiste */}
+      <div className="search-bar-container">
+        <div className="search-bar">
+          <FaSearch className="search-icon" />
+          <input
+            type="text"
+            placeholder="Dokumente durchsuchen (Titel, Kategorie, Typ, Tags)..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="search-input"
+          />
+          {searchQuery && (
+            <button className="search-clear-btn" onClick={() => setSearchQuery('')}>
+              <FaTimes />
+            </button>
           )}
         </div>
       </div>
